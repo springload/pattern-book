@@ -12,12 +12,13 @@ import Book from 'pattern-book';
 import 'h6.css'; // contains h6 { color: red; }
 
 export default class PatternLibrary {
-    render() {
-
-        <Book>
-            <h6>My Heading</h6>
-        </Book>
-    }
+  render() {
+    return (
+      <Book>
+        <h6>My Heading</h6>
+      </Book>
+    );
+  }
 }
 ```
 
@@ -43,3 +44,7 @@ I don't know but it's not here. Just use [Create-React-App](https://github.com/f
 ### Q. How do I organise the books with accordian sections, or titles?
 
 Well `pattern-book` just renders the component preview so use [react-accessible-accordion](https://github.com/springload/react-accessible-accordion/), or put headings between them. Design it however you want.
+
+## TODO
+
+Make the book not render until it scrolls into view (pattern libraries are notorious for having hundreds of compnents, so this is an easy optimisation).
