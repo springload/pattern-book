@@ -1,0 +1,53 @@
+{
+  "name": "pattern-book",
+  "version": "0.0.1",
+  "description": "Minimal Pattern Library component that renders React/JSX, HTML, and CSS",
+  "main": "./build/index.js",
+  "scripts": {
+    "build": "babel src --out-file build/index.js",
+    "prepublishOnly": "npm run build",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "benchmark": "^2.1.4",
+    "jest": "^21.0.2",
+    "memwatch-next": "^0.3.0"
+  },
+  "peerDependencies": {
+    "react": ">15"
+  },
+  "babel": {
+    "presets": [
+      "flow",
+      [
+        "env",
+        {
+          "targets": {
+            "node": "4"
+          }
+        }
+      ],
+      "react"
+    ],
+    "plugins": [
+      [
+        "transform-react-jsx"
+      ],
+      [
+        "transform-object-rest-spread",
+        {
+          "useBuiltIns": true
+        }
+      ]
+    ]
+  }
+}
