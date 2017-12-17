@@ -31,7 +31,8 @@ It will then render something like,
     <h6>My Heading</h6>
 </blockquote>
 
-The support for both HTML and JSX is so that you can expose different levels of markup complexity. The JSX-mode you will see React components, whereas HTML-mode will have their resulting HTML.
+
+There's support for both HTML and JSX so that you can expose different levels of markup complexity. In JSX you will see React Components and html tags, whereas HTML will only have html.
 
 The CSS is automatically derived from the styles applied to the wrapped elements (it uses browser APIs to determine this, so there's no need to manually associate CSS with a component).
 
@@ -48,5 +49,7 @@ Well `pattern-book` just renders the component preview so use [react-accessible-
 ## TODO
 
 * Pretty-print the HTML / JSX / CSS.
+* Make it support interactive components (with while accumulating the CSS across these multiple states).
 * Make the Book not render until it scrolls into view (pattern libraries are notorious for having hundreds of compnents, so this is an easy optimisation).
+* Tests
 
