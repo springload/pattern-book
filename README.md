@@ -11,7 +11,7 @@ import React, { Component } from 'pattern-book';
 import Book from 'pattern-book';
 import 'h6.css'; // contains h6 { color: red; }
 
-export default class PatternLibrary {
+class PatternLibrary extends Component {
   render() {
     return (
       <Book>
