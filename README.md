@@ -7,7 +7,7 @@ It wraps arbitrary HTML or React Components and displays them as HTML, JSX, and 
 Usage:
 
 ```
-import React, { Component } from 'pattern-book';
+import React, { Component } from 'react';
 import Book from 'pattern-book';
 import 'h6.css'; // contains h6 { color: red; }
 
