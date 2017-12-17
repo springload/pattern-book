@@ -30,15 +30,15 @@ It will then render something like,
     <h6>My Heading</h6>
 </blockquote>
 
-The HTML and JSX are so that you can expose different types of markup.
+The support for both HTML and JSX is so that you can expose different levels of markup complexity.
 
-The CSS is automatically derived from the CSS that's applied to the elements (it uses browser APIs to determine this, so there's no need to manually associate rules).
+The CSS is automatically derived from the styles applied to the wrapped elements (it uses browser APIs to determine this, so there's no need to manually associate CSS with a component).
 
 ## FAQ
 
 ### Q. Where's the dev server with hot reloading?
 
-I don't know. Just use [Create-React-App](https://github.com/facebookincubator/create-react-app) or whatever boilerplate you like.
+I don't know but it's not here. Just use [Create-React-App](https://github.com/facebookincubator/create-react-app) or whatever boilerplate you like.
 
 ### Q. How do I organise the books with accordian sections, or titles?
 
