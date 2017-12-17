@@ -9,11 +9,13 @@ Usage:
 ```
 import React, { Component } from 'pattern-book';
 import Book from 'pattern-book';
+import 'h6.css'; // contains h6 { color: red; }
 
 export default class PatternLibrary {
     render() {
+
         <Book>
-            <h1>My Heading</h1>
+            <h6>My Heading</h6>
         </Book>
     }
 }
@@ -22,10 +24,10 @@ export default class PatternLibrary {
 It will then render something like,
 
 <blockquote>
-    <details><summary>HTML</summary>&lt;h1&gt;My Heading&lt;/h1&gt;</details>
-    <details><summary>JSX</summary>&lt;h1&gt;My Heading&lt;/h1&gt;</details>
-    <details><summary>CSS</summary>h1 { color: red; }</details>
-# My Heading
+    <details><summary>HTML</summary>&lt;h6&gt;My Heading&lt;/h6&gt;</details>
+    <details><summary>JSX</summary>&lt;h6&gt;My Heading&lt;/h6&gt;</details>
+    <details><summary>CSS</summary>h6 { color: red; }</details>
+    <h6>My Heading</h6>
 </blockquote>
 
 The HTML and JSX are so that you can expose different types of markup.
