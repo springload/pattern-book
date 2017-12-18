@@ -21,11 +21,9 @@ class PatternLibrary extends Component {
   }
 }
 
-class Heading = ({ children }) => (
+const Heading = ({ children }) => (
   <h6>{children}</h6>
 )
-
-
 ```
 
 It will then render something like,
