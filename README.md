@@ -15,22 +15,29 @@ class PatternLibrary extends Component {
   render() {
     return (
       <Book>
-        <h6>My Heading</h6>
+        <Heading>My Heading</Heading>
       </Book>
     );
   }
 }
+
+class Heading = ({ children }) => (
+  <h6>{children}</h6>
+)
+
+
 ```
 
 It will then render something like,
 
 <blockquote>
     <details><summary>HTML</summary>&lt;h6&gt;My Heading&lt;/h6&gt;</details>
-    <details><summary>JSX</summary>&lt;h6&gt;My Heading&lt;/h6&gt;</details>
+    <details><summary>JSX</summary>&lt;Heading&gt;My Heading&lt;/Heading&gt;</details>
     <details><summary>CSS</summary>h6 { color: red; }</details>
     <h6>My Heading</h6>
 </blockquote>
 
+.
 
 There's support for both HTML and JSX so that you can expose different levels of markup complexity. In JSX you will see React Components and html tags, whereas HTML will only have html.
 
@@ -40,11 +47,11 @@ The CSS is automatically derived from the styles applied to the wrapped elements
 
 ### Q. Where's the dev server with hot reloading?
 
-I don't know but it's not here. Just use [Create-React-App](https://github.com/facebookincubator/create-react-app) or whatever boilerplate you like.
+I don't know but it's not here. Just use [Create-React-App](https://github.com/facebookincubator/create-react-app) or, add `<Book>` tags to a new page in your app, or use whatever boilerplate you like.
 
-### Q. How do I organise the books with accordian sections, or titles?
+### Q. How do I organise the books with titles, accordian sections, or titles?
 
-Well `pattern-book` just renders the component preview so use [react-accessible-accordion](https://github.com/springload/react-accessible-accordion/), or put headings between them. Design it however you want.
+Well `pattern-book` just renders the component preview so use [react-accessible-accordion](https://github.com/springload/react-accessible-accordion/), or put headings between them. Design it however you want. I don't care.
 
 ## TODO
 
