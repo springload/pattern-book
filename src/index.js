@@ -1,4 +1,5 @@
 import React, { PureComponent } from "react";
+import Beautify from "xml-zero-beautify";
 
 const DEFAULT_HEIGHT = 100;
 
@@ -33,8 +34,13 @@ export default class PatternBook extends PureComponent {
   }
 
   updateHTML() {
-    const html = this.container.innerHTML;
-    // TODO format HTML
+    const html = Beautify(this.container.innerHTML, {
+      beautify: true,
+      html: true
+    });
+
+    console.log("html", html);
+
     this.setState({
       html
     });

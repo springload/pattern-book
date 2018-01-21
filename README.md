@@ -47,14 +47,17 @@ The CSS is automatically derived from the styles applied to the wrapped elements
 
 I don't know but it's not here. Just use [Create-React-App](https://github.com/facebookincubator/create-react-app) or, add `<Book>` tags to a new page in your app, or use whatever boilerplate you like.
 
-### Q. How do I organise the books with titles, accordian sections, or titles?
+### Q. How do I organise the books with headings, accordions, or menus?
 
-Well `pattern-book` just renders the component preview so use [react-accessible-accordion](https://github.com/springload/react-accessible-accordion/), or put headings between them. Design it however you want. I don't care.
+Well `pattern-book` just renders the component preview so use any accordion your want ([react-accessible-accordion](https://github.com/springload/react-accessible-accordion/) is good), or put headings between them. Design it however you want. The software is unopinionated about this.
+
+
 
 ## TODO
 
 * Pretty-print the HTML / JSX / CSS.
 * Make it support interactive components (with while accumulating the CSS across these multiple states).
-* Make the Book not render until it scrolls into view (pattern libraries are notorious for having hundreds of compnents, so this is an easy optimisation).
+* Make the Book not render until it scrolls into view (pattern libraries are notorious for having hundreds of compnents on a long page, so this is an easy optimisation).
+* Support PropTypes. Sadly I'm not sure how we could support FlowType/TypeScript types because those are removed at compile-time.
 * Tests
 
