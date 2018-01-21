@@ -48,8 +48,12 @@ export default class PatternBook extends PureComponent {
 
   updateJSX() {
     const { children } = this.props;
-    const jsx = React.Children.map(children, this.updateJSXChildren).join("");
-    // TODO format HTML
+    let jsx = React.Children.map(children, this.updateJSXChildren).join("");
+
+    jsx = Beautify(this.container.innerHTML, {
+      beautify: true
+    });
+
     this.setState({
       jsx
     });
@@ -126,11 +130,11 @@ export default class PatternBook extends PureComponent {
       <div className="patternbook">
         <details className="patternbook__html">
           <summary>HTML</summary>
-          {html || "(no HTML)"}
+          <pre>{<code>{html}</code> || "(no HTML)"}</pre>
         </details>
         <details className="patternbook__jsx">
           <summary>JSX</summary>
-          {jsx || "(no JSX)"}
+          <pre>{<code>{jsx}</code> || "(no JSX)"}</pre>
         </details>
         <details className="patternbook__css">
           <summary>CSS</summary>
