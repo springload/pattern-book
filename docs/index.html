@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Pattern-Book - Minimal Pattern Libraries</title>
+    <style>
+        .book-flip-area {
+
+            height: 400px;
+
+            margin: 0 auto;
+        }
+
+        .book-flip-area:hover {}
+
+        .book-flip-area:hover>* {
+            pointer-events: none;
+        }
+
+
+        .book {
+            margin: 100px auto;
+            max-width: 160px;
+            position: relative;
+            perspective: 666px;
+            transform-style: preserve-3d;
+        }
+
+        .book>* {
+            box-sizing: border-box;
+            transform-origin: 0% 100%;
+            transform: rotateY(-30deg);
+            position: absolute;
+            left: 0px;
+            top: -80px;
+            transition: transform 1s ease;
+        }
+
+        .book__page1 {
+            background: red;
+            border-left: solid 20px #633;
+            color: #eee;
+            text-align: center;
+            padding-top: 70px;
+            font-size: 40px;
+            font-weight: bold;
+            text-shadow: -1px -1px 0px #999, 1px 1px 1px white;
+            z-index: 100;
+            backface-visibility: hidden;
+        }
+
+        .book__page1,
+        .book__page1b,
+        .book__page_last_back {
+            width: 200px;
+            height: 283px;
+            border-radius: 2px 5px 5px 2px;
+        }
+
+        .book-flip-area:hover .book__page1,
+        .book-flip-area:hover .book__page1b {
+            transform: rotateY(-110deg);
+        }
+
+        .book__page1b,
+        .book__page_last_back {
+            background: #606dbc;
+            background: repeating-linear-gradient( 45deg, #f00, #f00 10px, #c00 10px, #c00 20px);
+        }
+
+        .book__paper {
+            background-image: linear-gradient(to right, #999, #ccc 10%, #ddd, #eee, #fff);
+            border: solid 1px #ccc;
+            border-radius: 2px 5px 5px 2px;
+            margin-top: 2px;
+            width: 202px;
+            height: 280px;
+        }
+
+        .book__page2 {
+            left: 2px;
+
+        }
+
+        .book-flip-area:hover .book__page2 {
+            transform: rotateY(-107deg);
+        }
+
+        .book__page3 {
+            left: 4px;
+
+        }
+
+        .book-flip-area:hover .book__page3 {
+            transform: rotateY(-106deg);
+        }
+
+
+        .book__page4 {
+            left: 6px;
+        }
+
+        .book-flip-area:hover .book__page4 {
+            transform: rotateY(-102deg);
+        }
+
+
+        .book__page5 {
+            left: 8px;
+        }
+
+        .book-flip-area:hover .book__page5 {
+            transform: rotateY(-99deg);
+        }
+
+        .book__page_last {
+            width: 200px;
+            height: 280px;
+            padding-left: 0px;
+            left: 7px;
+            border-radius: 2px 5px 5px 2px;
+            transform: rotateY(-29deg);
+        }
+
+        .book-flip-area:hover .book__page_last {
+            transform: rotateY(-9deg);
+        }
+
+
+
+        .book__page_last_back {
+            left: 10px;
+            transform: rotateY(-27deg);
+        }
+
+        .book-flip-area:hover .book__page_last_back {
+            transform: rotateY(-7deg);
+        }
+
+        @keyframes FadeInOutIn {
+            0% {
+                opacity: 1;
+            }
+            10% {
+                opacity: 0;
+            }
+            60% {
+                opacity: 0;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes FadeOutInOut {
+            0% {
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            60% {
+                opacity: 1;
+            }
+            70% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .install_package {
+            position: relative;
+            margin-top: 50%;
+            width: 190px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .install_package__code {
+            width: 100%;
+            background-color: #666;
+            color: #fad6a3;
+            font-weight: bold;
+            padding: 5px;
+        }
+
+        .fadeinout--in {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            animation: FadeInOutIn 5s infinite;
+
+        }
+
+        .fadeinout--out {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            animation: FadeOutInOut 5s infinite;
+        }
+    </style>
+</head>
+
+<p>sdfsdsdf</p>
+
+<div class="book-flip-area">
+    <div class="book">
+        <div class="book__page1">
+            Pattern Book
+        </div>
+        <div class="book__page1b"> </div>
+
+        <div class="book__page2 book__paper">
+            Wʜy ɒ qɒƚƚɘɿn lidɿɒɿy boɘƨn'ƚ nɘɘb ɒ wɘd ƨɘɿvɘɿ
+        </div>
+
+        <div class="book__page3 book__paper">
+            Wʜy ɒ qɒƚƚɘɿn lidɿɒɿy boɘƨn'ƚ nɘɘb yɘƚ ɒnoƚʜɘɿ ƚɘmqlɒƚinǫ lɒnǫuɒǫɘ
+        </div>
+
+        <div class="book__page4 book__paper">
+            Wʜy ɒ qɒƚƚɘɿn lidɿɒɿy ƨʜoulb ɿɘɒb youɿ ɘxiƨƚinǫ ɔomqonɘnƚƨ
+        </div>
+
+        <div class="book__page5 book__paper">
+
+        </div>
+
+        <div class="book__page_last book__paper">
+            <div class="install_package">
+                <span class="fadeinout--in install_package__code">npm install pattern-book
+                </span>
+                <span class="fadeinout--out install_package__code">yarn add pattern-book
+                </span>
+            </div>
+        </div>
+
+        <div class="book__page_last_back">
+
+        </div>
+    </div>
+</div>
+
+</html>
