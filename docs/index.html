@@ -6,18 +6,13 @@
     <title>Pattern-Book - Minimal Pattern Libraries</title>
     <style>
         .book-flip-area {
-
             height: 400px;
-
             margin: 0 auto;
         }
-
-        .book-flip-area:hover {}
 
         .book-flip-area:hover>* {
             pointer-events: none;
         }
-
 
         .book {
             margin: 100px auto;
@@ -50,6 +45,8 @@
             backface-visibility: hidden;
         }
 
+
+
         .book__page1,
         .book__page1b,
         .book__page_last_back {
@@ -58,9 +55,15 @@
             border-radius: 2px 5px 5px 2px;
         }
 
+        .book_page1,
+        .book_page1b {
+            transition-duration: 0.5s;
+        }
+
         .book-flip-area:hover .book__page1,
         .book-flip-area:hover .book__page1b {
             transform: rotateY(-110deg);
+            transition-duration: 0.5s;
         }
 
         .book__page1b,
@@ -80,16 +83,17 @@
 
         .book__page2 {
             left: 2px;
-
+            transition-duration: 0.8s;
         }
 
         .book-flip-area:hover .book__page2 {
             transform: rotateY(-107deg);
+            transition-duration: 0.8s;
         }
 
         .book__page3 {
             left: 4px;
-
+            transition: transform 1s ease;
         }
 
         .book-flip-area:hover .book__page3 {
@@ -99,6 +103,7 @@
 
         .book__page4 {
             left: 6px;
+            transition: transform 1s ease;
         }
 
         .book-flip-area:hover .book__page4 {
@@ -108,10 +113,11 @@
 
         .book__page5 {
             left: 8px;
+            transition: transform 1s ease;
         }
 
         .book-flip-area:hover .book__page5 {
-            transform: rotateY(-99deg);
+            transform: rotateY(-97deg);
         }
 
         .book__page_last {
@@ -121,20 +127,33 @@
             left: 7px;
             border-radius: 2px 5px 5px 2px;
             transform: rotateY(-29deg);
+            transition: transform 1s ease;
         }
 
         .book-flip-area:hover .book__page_last {
             transform: rotateY(-9deg);
         }
 
-
-
-        .book__page_last_back {
-            left: 10px;
+        .book__after_last {
+            left: 7px;
             transform: rotateY(-27deg);
         }
 
+        .book-flip-area:hover .book__after_last {
+            left: 8px;
+            transform: rotateY(-7deg);
+        }
+
+
+
+        .book__page_last_back {
+            left: 11px;
+            transform: rotateY(-27deg);
+            transition: transform 1s ease;
+        }
+
         .book-flip-area:hover .book__page_last_back {
+            left: 12px;
             transform: rotateY(-7deg);
         }
 
@@ -240,6 +259,10 @@
                 <span class="fadeinout--out install_package__code">yarn add pattern-book
                 </span>
             </div>
+        </div>
+
+        <div class="book__after_last book__paper">
+
         </div>
 
         <div class="book__page_last_back">
