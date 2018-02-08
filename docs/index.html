@@ -7,7 +7,13 @@
     <style>
         .book-flip-area {
             height: 400px;
+            width: 400px;
             margin: 0 auto;
+        }
+
+        #install_command {
+            position: absolute;
+            display: none;
         }
 
         .book-flip-area:hover>* {
@@ -33,7 +39,8 @@
         }
 
         .book__page1 {
-            background: red;
+            background: #e00;
+            background-image: linear-gradient(45deg, #800, #c00 20%, #d00, #e00, #f00);
             border-left: solid 20px #633;
             color: #eee;
             text-align: center;
@@ -55,9 +62,17 @@
             border-radius: 2px 5px 5px 2px;
         }
 
+        .book__page_last_back {
+            width: 204px;
+        }
+
         .book_page1,
         .book_page1b {
             transition-duration: 0.5s;
+        }
+
+        .book_page1b {
+            box-shadow: 0px 0px -20px -20px rgba(255, 255, 255, 0.9)
         }
 
         .book-flip-area:hover .book__page1,
@@ -69,11 +84,11 @@
         .book__page1b,
         .book__page_last_back {
             background: #606dbc;
-            background: repeating-linear-gradient( 45deg, #f00, #f00 10px, #c00 10px, #c00 20px);
+            background: repeating-linear-gradient( 45deg, #b00, #b00 10px, #c00 10px, #c00 20px);
         }
 
         .book__paper {
-            background-image: linear-gradient(to right, #999, #ccc 10%, #ddd, #eee, #fff);
+            background-image: linear-gradient(to right, #999 3%, #ccc 15%, #ddd, #eee, #fff);
             border: solid 1px #ccc;
             border-radius: 2px 5px 5px 2px;
             margin-top: 2px;
@@ -205,6 +220,7 @@
         .install_package__code {
             width: 100%;
             background-color: #666;
+            background-image: linear-gradient(to right, #333, #555 10%, #666, #666);
             color: #fad6a3;
             font-weight: bold;
             padding: 5px;
@@ -229,28 +245,29 @@
 
 <p>sdfsdsdf</p>
 
-<div class="book-flip-area">
+<div class="book-flip-area" id="book-area" tabindex="0">
+    <input id="install_command" value="npm install pattern-book ...OR... yarn add pattern-book">
     <div class="book">
         <div class="book__page1">
             Pattern Book
         </div>
+
+
         <div class="book__page1b"> </div>
 
         <div class="book__page2 book__paper">
-            Wʜy ɒ qɒƚƚɘɿn lidɿɒɿy boɘƨn'ƚ nɘɘb ɒ wɘd ƨɘɿvɘɿ
+            Why should a pattern library have an web server?
         </div>
 
         <div class="book__page3 book__paper">
-            Wʜy ɒ qɒƚƚɘɿn lidɿɒɿy boɘƨn'ƚ nɘɘb yɘƚ ɒnoƚʜɘɿ ƚɘmqlɒƚinǫ lɒnǫuɒǫɘ
+            Why should a pattern library need to be told which styles you use?
         </div>
 
         <div class="book__page4 book__paper">
-            Wʜy ɒ qɒƚƚɘɿn lidɿɒɿy ƨʜoulb ɿɘɒb youɿ ɘxiƨƚinǫ ɔomqonɘnƚƨ
+            Why can't a pattern library work with your existing components?
         </div>
 
-        <div class="book__page5 book__paper">
-
-        </div>
+        <div class="book__page5 book__paper"> </div>
 
         <div class="book__page_last book__paper">
             <div class="install_package">
@@ -261,14 +278,32 @@
             </div>
         </div>
 
-        <div class="book__after_last book__paper">
-
-        </div>
+        <div class="book__after_last book__paper"> </div>
 
         <div class="book__page_last_back">
 
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        var bookFlipArea = document.getElementById("book-area");
+        var installCommand = document.getElementById("install_command");
+
+        console.log(bookFlipArea, installCommand)
+        if (bookFlipArea && installCommand) {
+            bookFlipArea.addEventListener('click', function () {
+                installCommand.select();
+                try {
+                    var successful = document.execCommand('copy');
+                    console.log('Copying text command was ' + successful);
+                } catch (err) {
+                    console.log('Oops, unable to copy');
+                }
+            })
+        }
+    }())
+</script>
 
 </html>
