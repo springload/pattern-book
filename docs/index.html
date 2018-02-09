@@ -17,7 +17,7 @@
             display: none;
         }
 
-        .book-flip-area:hover>* {
+        .book-flip-area>* {
             pointer-events: none;
         }
 
@@ -29,13 +29,14 @@
             transform-style: preserve-3d;
         }
 
+
         .book>* {
             box-sizing: border-box;
             transform-origin: 0% 100%;
             transform: rotateY(-30deg);
             position: absolute;
             left: 0px;
-            top: -80px;
+            top: -50px;
             transition: transform 1s ease;
         }
 
@@ -54,7 +55,7 @@
             backface-visibility: hidden;
         }
 
-        .book__page1:after {
+        .book__page1:before {
             content: "";
             position: absolute;
             left: 4px;
@@ -64,6 +65,28 @@
             border-radius: 5px;
             width: 168px;
             height: 271px;
+        }
+
+        .book__page1:after {
+            content: "";
+            display: block;
+            border-radius: 5px;
+            width: 200px;
+            height: 3px;
+            background: transparent;
+            box-shadow: 0px 60px 10px #fff, 0px 50px 20px #fff;
+            margin-top: -120px;
+        }
+
+        .book__page1b:after {
+            content: "";
+            display: block;
+            border-radius: 5px;
+            width: 200px;
+            height: 3px;
+            background: transparent;
+            box-shadow: 0px 400px 30px #000;
+            margin-top: -120px;
         }
 
         .book__page1,
@@ -87,6 +110,19 @@
             box-shadow: 0px 0px -20px -20px rgba(255, 255, 255, 0.9)
         }
 
+        .book_page1b:after {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: 4px;
+            display: block;
+            border: inset 2px yellow;
+            border-radius: 5px;
+            width: 168px;
+            height: 271px;
+        }
+
+
         .book-flip-area:hover .book__page1,
         .book-flip-area:hover .book__page1b {
             transform: rotateY(-110deg);
@@ -96,7 +132,7 @@
         .book__page1b,
         .book__page_last_back {
             background: #606dbc;
-            background: repeating-linear-gradient( 45deg, #b00, #b00 10px, #c00 10px, #c00 20px);
+            background: repeating-linear-gradient( 45deg, #b90000, #b90000 10px, #c00000 10px, #c00000 20px);
         }
 
         .book__paper {
@@ -150,12 +186,26 @@
         .book__page_last {
             width: 200px;
             height: 280px;
-            padding-left: 0px;
-            left: 7px;
+            left: 5px;
             border-radius: 2px 5px 5px 2px;
             transform: rotateY(-29deg);
             transition: transform 1s ease;
+            position: relative;
+            z-index: 100;
         }
+
+
+        .book__page_last:after {
+            content: "";
+            display: block;
+            border-radius: 5px;
+            width: 200px;
+            height: 3px;
+            background: transparent;
+            box-shadow: -10px 305px 30px #000;
+            margin-top: -120px;
+        }
+
 
         .book-flip-area:hover .book__page_last {
             transform: rotateY(-9deg);
