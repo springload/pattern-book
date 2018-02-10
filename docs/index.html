@@ -4,13 +4,24 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Pattern-Book - Minimal Pattern Libraries</title>
+    <title>Pattern-Book - Minimal Pattern Library / Style Guide</title>
     <style>
+        body {
+            padding: 0px;
+            margin: 0px;
+            background: url('book-background.jpg');
+        }
+
         .book-flip-area {
             height: 300px;
             width: 100%;
             max-width: 400px;
-            margin: 0 auto;
+            margin: 20% auto 10% auto;
+        }
+
+        .book-flip-area:focus {
+            outline: none;
+            border: none;
         }
 
         #install_command {
@@ -64,7 +75,7 @@
             display: block;
             border: inset 2px yellow;
             border-radius: 5px;
-            width: 168px;
+            width: 167px;
             height: 271px;
         }
 
@@ -103,7 +114,7 @@
         }
 
         .book_page1,
-        .book_page1b {
+        .book_iespage1b {
             transition-duration: 0.5s;
         }
 
@@ -125,7 +136,9 @@
 
 
         .book-flip-area:hover .book__page1,
-        .book-flip-area:hover .book__page1b {
+        .book-flip-area:hover .book__page1b,
+        .book-flip-area:focus .book__page1,
+        .book-flip-area:focus .book__page1b {
             transform: rotateY(-110deg);
             transition-duration: 0.5s;
         }
@@ -151,7 +164,8 @@
             transition-duration: 0.8s;
         }
 
-        .book-flip-area:hover .book__page2 {
+        .book-flip-area:hover .book__page2,
+        .book-flip-area:focus .book__page2 {
             transform: rotateY(-107deg);
             transition-duration: 0.8s;
         }
@@ -161,7 +175,8 @@
             transition: transform 1s ease;
         }
 
-        .book-flip-area:hover .book__page3 {
+        .book-flip-area:hover .book__page3,
+        .book-flip-area:focus .book__page3 {
             transform: rotateY(-106deg);
         }
 
@@ -171,7 +186,8 @@
             transition: transform 1s ease;
         }
 
-        .book-flip-area:hover .book__page4 {
+        .book-flip-area:hover .book__page4,
+        .book-flip-area:focus .book__page4 {
             transform: rotateY(-102deg);
         }
 
@@ -181,7 +197,8 @@
             transition: transform 1s ease;
         }
 
-        .book-flip-area:hover .book__page5 {
+        .book-flip-area:hover .book__page5,
+        .book-flip-area:focus .book__page5 {
             transform: rotateY(-97deg);
         }
 
@@ -209,7 +226,8 @@
         }
 
 
-        .book-flip-area:hover .book__page_last {
+        .book-flip-area:hover .book__page_last,
+        .book-flip-area:focus .book__page_last {
             transform: rotateY(-9deg);
         }
 
@@ -218,12 +236,11 @@
             transform: rotateY(-27deg);
         }
 
-        .book-flip-area:hover .book__after_last {
+        .book-flip-area:hover .book__after_last,
+        .book-flip-area:focus .book__after_last {
             left: 8px;
             transform: rotateY(-7deg);
         }
-
-
 
         .book__page_last_back {
             left: 11px;
@@ -231,7 +248,8 @@
             transition: transform 1s ease;
         }
 
-        .book-flip-area:hover .book__page_last_back {
+        .book-flip-area:hover .book__page_last_back,
+        .book-flip-area:focus .book__page_last_back {
             left: 12px;
             transform: rotateY(-7deg);
         }
@@ -304,10 +322,40 @@
             top: 0px;
             animation: FadeOutInOut 5s infinite;
         }
+
+        .red-page {
+            background: red;
+            color: white;
+            min-height: 10000px;
+            position: absolute;
+            z-index: 100;
+            border-top: inset 20px yellow;
+            width: 100%;
+        }
+
+        .red-page:before {
+            content: "";
+            display: block;
+            background: red;
+            margin-top: 0px;
+            height: 100%;
+            min-height: 10000px;
+            border-top: inset 20px yellow;
+            transform: skewY(20deg);
+        }
+
+        .red-page:after {
+            content: "";
+            display: block;
+            margin-top: 50px;
+            height: 100%;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            border-top: inset 20px yellow;
+        }
     </style>
 </head>
-
-<p>sdfsdsdf</p>
 
 <div class="book-flip-area" id="book-area" tabindex="0">
     <input id="install_command" value="npm install pattern-book ...OR... yarn add pattern-book">
@@ -315,24 +363,17 @@
         <div class="book__page1">
             Pattern Book
         </div>
-
-
         <div class="book__page1b"> </div>
-
         <div class="book__page2 book__paper">
             Why should a pattern library have an web server?
         </div>
-
         <div class="book__page3 book__paper">
             Why should a pattern library need to be told which styles you use?
         </div>
-
         <div class="book__page4 book__paper">
             Why can't a pattern library work with your existing components?
         </div>
-
         <div class="book__page5 book__paper"> </div>
-
         <div class="book__page_last book__paper">
             <div class="install_package">
                 <span class="fadeinout--in install_package__code">npm install pattern-book
@@ -341,13 +382,43 @@
                 </span>
             </div>
         </div>
-
         <div class="book__after_last book__paper"> </div>
-
-        <div class="book__page_last_back">
-
-        </div>
+        <div class="book__page_last_back"> </div>
     </div>
+</div>
+
+<div class="red-page">
+    <p>Kia ora.. Bugger, this wicked misses is as pretty suss as a solid rimu kumara. Mean while, in Hamilton, Mrs Falani and
+        Fred Dagg were up to no good with a bunch of nuclear-free Bell Birds. The tapu force of his cooking up a feed was
+        on par with Uncle Bully's rip-off slipper. Put the jug on will you bro, all these rough as guts tomato sauces can
+        wait till later. The first prize for wobbling goes to... some uni student and his epic mince pie, what a egg. Bro,
+        pieces of pounamu are really carked it good with mean as jerseys, aye. You have no idea how hard case our paru pohutukawa
+        trees were aye. Every time I see those pearler Hei-tikis it's like Rangitoto Island all over again aye, rack off.</p>
+
+    <p> Mean while, at the black singlet woolshed party, cook your own eggs Jake. Anyway, Dr Ropata is just James Cook in disguise,
+        to find the true meaning of life, one must start boiling-up with the Jafa, mate. After the giant weka is munted,
+        you add all the good as kiwis to the cheese on toast you've got yourself a meal. Technology has allowed rip-off kai
+        moanas to participate in the global conversation of bloody boxes of fluffies. The next Generation of hard yakka manuses
+        have already flogged over at Pack n' Save. What's the hurry Cardigan Bay? There's plenty of troties in behind the
+        bicycle shed. Smoko time holds the most naff community in the country.. Rhys Darby was cruising for a brusing when
+        the beaut skiving off event occured. Bro, this fully sick brain drain is as cool as a stoked bloke.</p>
+
+    <p>Mean while, in a waka, Helen Clarke and John Key were up to no good with a bunch of crook L&Ps. The chocka full force
+        of his burning my Vogel's was on par with The Topp Twins's beautiful milk. Put the jug on will you bro, all these
+        cracker Silver Ferns can wait till later. The first prize for making scones goes to... Rangi and his flat stick quater-acre
+        patch, what a munter. Bro, pauas are really snarky good with random fellas, aye. You have no idea how chronic our
+        sweet onion dips were aye. Every time I see those kiwi as pinapple lumps it's like the dairy all over again aye,
+        chur bro. Anyway, Hercules Morse, as big as a horse is just The Hungery Caterpilar in disguise, to find the true
+        meaning of life, one must start preparing the hungi with the Tui, mate. After the All Black is skived off, you add
+        all the dodgy girl guide biscuits to the ute you've got yourself a meal.</p>
+
+    <p>Technology has allowed bung hongis to participate in the global conversation of beached as native vegetables. The next
+        Generation of thermo-nuclear ankle biters have already rooted over at Castle Hill. What's the hurry Bazza? There's
+        plenty of wet blankets in that one episode of Tux Wonder Dogs, you know the one bro. The op shop holds the most outrageously
+        awesome community in the country.. The Armed Offenders Squad was chundering when the sweet as munting event occured.
+        But, this sweet as tiki tour is as stink as a heaps good cuzzie. Mean while, in the wop wops, Spot, the Telecom dog
+        and Manus Morissette were up to no good with a bunch of primo vivids. The choice force of his whinging was on par
+        with Maui's stuffed toasted sandwich.</p>
 </div>
 
 <script>
