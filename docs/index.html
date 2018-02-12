@@ -323,41 +323,68 @@
             animation: FadeOutInOut 4.5s infinite;
         }
 
-        .red-page {
+        .red-bands {
             background: red;
             color: white;
             position: relative;
-            min-height: 1300px;
-            border-top: inset 20px #ffd700;
+            min-height: 10vh;
+            border-top: double 20px #ffd700;
             width: 100%;
             transform: skewY(-10deg);
         }
 
-        .red-page:before {
+        .red-bands:before {
             content: "";
             display: block;
-            background: red;
+            background: #bb0000;
             margin-top: 0px;
-            min-height: 1300px;
-            border-top: inset 20px #ffd700;
+            min-height: 60vh;
+            border-top: double 20px #ffd700;
             transform: skewY(30deg);
         }
 
-        .red-page+.white-page {
-            margin-top: -1000px;
+        .scroll-down-hint {
+            color: #fff;
+            font-size: 300px;
             position: absolute;
-            z-index: 100;
+            top: 90vh;
+            transform: rotate(180deg)
         }
 
         .white-page {
-
             width: 100%;
+            position: absolute;
+            top: 100vh;
+            background: #ccc;
         }
 
         .white-page>div {
             margin: 0 auto;
+            max-width: 960px;
+            min-height: 100vh;
+            font-family: sans-serif;
+            hyphens: none;
+        }
 
-            max-width: 400px;
+        .pull-quote {
+            font-size: xx-large;
+            hyphens: none;
+            -webkit-hyphens: none;
+            -ms-hyphens: none;
+            -moz-hyphens: none;
+        }
+
+        dt {
+            border-bottom: solid 1px #777;
+        }
+
+        dd {
+            margin-bottom: 1rem;
+        }
+
+        dt,
+        dd {
+            font-size: large;
         }
     </style>
 </head>
@@ -392,44 +419,62 @@
     </div>
 </div>
 
-<div class="red-page"></div>
+<div class="red-bands"> </div>
+
+<div class="scroll-down-hint"> ^ </div>
 
 <div class="white-page">
 
     <div>
-        <p>Kia ora.. Bugger, this wicked misses is as pretty suss as a solid rimu kumara. Mean while, in Hamilton, Mrs Falani
-            and Fred Dagg were up to no good with a bunch of nuclear-free Bell Birds. The tapu force of his cooking up a
-            feed was on par with Uncle Bully's rip-off slipper. Put the jug on will you bro, all these rough as guts tomato
-            sauces can wait till later. The first prize for wobbling goes to... some uni student and his epic mince pie,
-            what a egg. Bro, pieces of pounamu are really carked it good with mean as jerseys, aye. You have no idea how
-            hard case our paru pohutukawa trees were aye. Every time I see those pearler Hei-tikis it's like Rangitoto Island
-            all over again aye, rack off.</p>
+        <p class="pull-quote">
+            Pattern-Book is a simple and tiny component that auto-detects your HTML and CSS and displays it, and that's all.
+        </p>
 
-        <p> Mean while, at the black singlet woolshed party, cook your own eggs Jake. Anyway, Dr Ropata is just James Cook in
-            disguise, to find the true meaning of life, one must start boiling-up with the Jafa, mate. After the giant weka
-            is munted, you add all the good as kiwis to the cheese on toast you've got yourself a meal. Technology has allowed
-            rip-off kai moanas to participate in the global conversation of bloody boxes of fluffies. The next Generation
-            of hard yakka manuses have already flogged over at Pack n' Save. What's the hurry Cardigan Bay? There's plenty
-            of troties in behind the bicycle shed. Smoko time holds the most naff community in the country.. Rhys Darby was
-            cruising for a brusing when the beaut skiving off event occured. Bro, this fully sick brain drain is as cool
-            as a stoked bloke.</p>
+        <p class="pull-quote">Unlike most Pattern Libaries, also known as Style Guides, there's no need to define components in the way that the
+            framework understands. Instead Pattern-Book works with your existing components and it auto-detects the HTML
+            and CSS being used.</p>
 
-        <p>Mean while, in a waka, Helen Clarke and John Key were up to no good with a bunch of crook L&Ps. The chocka full force
-            of his burning my Vogel's was on par with The Topp Twins's beautiful milk. Put the jug on will you bro, all these
-            cracker Silver Ferns can wait till later. The first prize for making scones goes to... Rangi and his flat stick
-            quater-acre patch, what a munter. Bro, pauas are really snarky good with random fellas, aye. You have no idea
-            how chronic our sweet onion dips were aye. Every time I see those kiwi as pinapple lumps it's like the dairy
-            all over again aye, chur bro. Anyway, Hercules Morse, as big as a horse is just The Hungery Caterpilar in disguise,
-            to find the true meaning of life, one must start preparing the hungi with the Tui, mate. After the All Black
-            is skived off, you add all the dodgy girl guide biscuits to the ute you've got yourself a meal.</p>
+        <p class="pull-quote">In your React code just wrap
+            <code>&lt;Book&gt;</code> around and...</p>
+        <h2>Example</h2>
+        <p>
+            <code>&lt;Book&gt;<br>&nbsp; &nbsp; &lt;h6&gt;My Heading&lt;/h6&gt;<br>&lt;/Book&gt;</code>
+        </p>
+        <p>will be rendered as...</p>
 
-        <p>Technology has allowed bung hongis to participate in the global conversation of beached as native vegetables. The
-            next Generation of thermo-nuclear ankle biters have already rooted over at Castle Hill. What's the hurry Bazza?
-            There's plenty of wet blankets in that one episode of Tux Wonder Dogs, you know the one bro. The op shop holds
-            the most outrageously awesome community in the country.. The Armed Offenders Squad was chundering when the sweet
-            as munting event occured. But, this sweet as tiki tour is as stink as a heaps good cuzzie. Mean while, in the
-            wop wops, Spot, the Telecom dog and Manus Morissette were up to no good with a bunch of primo vivids. The choice
-            force of his whinging was on par with Maui's stuffed toasted sandwich.</p>
+        <blockquote>
+            <details>
+                <summary>HTML</summary>&lt;h6&gt;My Heading&lt;/h6&gt;</details>
+            <details>
+                <summary>CSS</summary>h6 { color: red; }</details>
+            <h6>My Heading</h6>
+        </blockquote>
+
+        <h1>
+            <abbr title="frequently asked questions"></abbr>FAQ</h1>
+
+        <dl>
+            <dt>
+                <abbr title="question">Q.</abbr> Where's the dev webserver server with hot reloading?</dt>
+            <dd>I don't know but it's not here. Just use
+                <a href="https://github.com/facebook/create-react-app">Create-React-App</a> or, add &lt;Book&gt; tags to a new page or route in your app, or use whatever boilerplate
+                you'd prefer.</dd>
+            <dt>
+                <abbr title="question">Q.</abbr> How do I organise groups of patterns... with headings, accordions, or menus?</dt>
+            <dd>Pattern-Book doesn't define an interface for this, and is intentionally unopionated about this so design it however
+                you want. Use headings, or accordians or whatever.</dd>
+            <dt>
+                <abbr title="question">Q.</abbr> Can it display JSX?</dt>
+            <dd>Yes, but you'll need to pass in a
+                <code>jsx</code> prop, and this functionality is still in alpha. We welcome contributions and test cases.</dd>
+        </dl>
+
+
+
+
+
+
+
     </div>
 </div>
 
