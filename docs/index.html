@@ -405,11 +405,13 @@
 <div class="white-page">
 
     <pre data-markdown class="faq">
-### Q. This is a pattern library so where's the outdated dev webserver with hot reloading?
+### Q. This is a pattern library so where's the outdated dev webserver with broken hot reloading?
 
-Just use [Create-React-App](https://github.com/facebookincubator/create-react-app) or, add `&lt;Book&gt;` tags to a new route in your app, or use whatever boilerplate you like.
+Great question.
 
-`pattern-book` doesn't include one and this is intentional because other projects do it better.
+`pattern-book` doesn't include a dev server because other projects do it better.
+
+So instead just use [Create-React-App](https://github.com/facebookincubator/create-react-app) or, add `<Book>` tags to a new route in your app, or use whatever boilerplate you like.
 
 ### Q. How does pattern-book organise the page of patterns... with headings, accordions, tabs, or what?
 
@@ -419,7 +421,7 @@ Imagine if your pattern library had 5 components then it probably should be orga
 
 ### Q. How can I make patterns for an existing website?
 
-One of the advantages of Pattern-Book is that it detects the CSS Rules being applied, so you can put your entire site's CSS files on the page and then write HTML that uses them and Pattern-Book will only display the relevant CSS (no need to manually associate CSS with a particular `&lt;Book&gt;`). This means that it's hopefully a lot less effort to repurpose your existing CSS as a pattern library.
+One of the advantages of Pattern-Book is that it detects the CSS Rules being applied, so you can put your entire site's CSS files on the page and then write HTML that uses them and Pattern-Book will only display the relevant CSS (no need to manually associate CSS with a particular `<Book>`). This means that it's hopefully a lot less effort to repurpose your existing CSS as a pattern library.
 
 ## Features
 
@@ -436,8 +438,9 @@ One of the advantages of Pattern-Book is that it detects the CSS Rules being app
 * [ ] Detect basic JSX React Components... this is almost working
 * [ ] Render prop overrides for HTML and CSS (and the whole render()?)
 * [ ] Make it support interactive components (eg accumulating CSS across these multiple states).
-* [ ] Make the `&lt;Book&gt;` not render until it scrolls into view (pattern libraries are notorious for having hundreds of compnents on a long page, so this is hopefully an easy optimisation).
+* [ ] Make the `<Book>` not render until it scrolls into view (pattern libraries are notorious for having hundreds of compnents on a long page, so this is hopefully an easy optimisation).
 * [ ] Parse SourceMaps to derive Sass (etc) if possible.
+            
     </pre>
 </div>
 

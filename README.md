@@ -1,6 +1,10 @@
-# pattern-book.js
+<p align="center">
+  <img width="245" height="378" src="/logo.png">
+</p>
 
-It's not a pattern library, it's a pattern book, so make your own library!
+_It's not a pattern library, it's a pattern book, so make your own library!_
+
+---
 
 Pattern-Book is a simple and tiny component that auto-detects your HTML and CSS and displays it, and that's all.
 
@@ -41,11 +45,13 @@ Will look like
     </div>    
 </blockquote>
 
-### Q. This is a pattern library so where's the outdated dev webserver with hot reloading?
+### Q. This is a pattern library so where's the outdated dev webserver with broken hot reloading?
 
-Just use [Create-React-App](https://github.com/facebookincubator/create-react-app) or, add `<Book>` tags to a new route in your app, or use whatever boilerplate you like.
+Great question.
 
-`pattern-book` doesn't include one and this is intentional because other projects do it better.
+`pattern-book` doesn't include a dev server because other projects do it better.
+
+So instead just use [Create-React-App](https://github.com/facebookincubator/create-react-app) or, add `<Book>` tags to a new route in your app, or use whatever boilerplate you like.
 
 ### Q. How does pattern-book organise the page of patterns... with headings, accordions, tabs, or what?
 
