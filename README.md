@@ -1,8 +1,6 @@
 <p align="center">
   <img width="245" height="378" src="/logo.png" alt="Pattern Book"><br>
-</p>
-<p align="center">
-_It's not a pattern library, it's a pattern book, so make your own library!_
+  <i>It's not a pattern library, it's a pattern book, so make your own library!</i>
 </p>
 
 ---
