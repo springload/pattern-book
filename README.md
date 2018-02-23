@@ -1,23 +1,27 @@
 # pattern-book.js
 
-It's not a pattern library, it's a pattern book, so make your own library.
+It's not a pattern library, it's a pattern book, so make your own library!
 
-It wraps arbitrary HTML or React Components and displays them as HTML, JSX, and CSS.
+Pattern-Book is a simple and tiny component that auto-detects your HTML and CSS and displays it, and that's all.
+
+Unlike most Pattern Libaries, also known as Style Guides, there's no need to define components in the way that the framework understands. Instead Pattern-Book works with your existing components and it auto-detects the code being used.
 
 Usage:
 
-```
-import React, { Component } from 'react';
-import Book from 'pattern-book';
-import 'h6.css'; // contains h6 { color: red; }
+```javascript
+import React, { Component } from "react";
+import Book from "pattern-book";
+import "h6.css"; // contains h6 { color: red; }
 
 class PatternLibrary extends Component {
   render() {
     return (
       <div>
-      <h1>Patterns</h1>
+        <h4>Patterns</h4>
+        <h5>Heading Patterns</h5>
+        <hr />
         <Book>
-          <h6>My Heading</h6>
+          <h6>My Heading 6</h6>
         </Book>
       </div>
     );
@@ -25,33 +29,48 @@ class PatternLibrary extends Component {
 }
 ```
 
-It will then render something like,
+Will look like
 
 <blockquote>
-    <details><summary>HTML</summary>&lt;h6&gt;My Heading&lt;/h6&gt;</details>
-    <details><summary>CSS</summary>h6 { color: red; }</details>
-    <h6>My Heading</h6>
+    <h4>Patterns</h4>
+    <h5>Heading Patterns</h5>
+    <div>
+      <h6>My Heading 6</h6>
+      <details><summary>HTML</summary>&lt;h6&gt;My Heading 6&lt;/h6&gt;</details>
+      <details><summary>CSS</summary>h6 { color: red; }</details>
+    </div>    
 </blockquote>
 
-The CSS is automatically derived from the styles applied to the wrapped elements (it uses browser APIs to determine this, so there's no need to manually associate CSS with a component).
+### Q. This is a pattern library so where's the outdated dev webserver with hot reloading?
 
-## FAQ
+Just use [Create-React-App](https://github.com/facebookincubator/create-react-app) or, add `<Book>` tags to a new route in your app, or use whatever boilerplate you like.
 
-### Q. Where's the dev server with hot reloading?
+`pattern-book` doesn't include one and this is intentional because other projects do it better.
 
-I don't know but it's not here. Just use [Create-React-App](https://github.com/facebookincubator/create-react-app) or, add `<Book>` tags to a new page in your app, or use whatever boilerplate you like.
+### Q. How does pattern-book organise the page of patterns... with headings, accordions, tabs, or what?
 
-### Q. How do I organise the page of patterns... with headings, accordions, or menus?
+It doesn't organise them, so design it however you want!
 
-If a pattern library has 10 components then it usually needs  
-The software is unopinionated about this.
+Imagine if your pattern library had 5 components then it probably should be organised quite differently to another library with 1000 components, so this software is unopinionated about organisation. Pattern-Book just renders the component preview so decide for yourself how to organise them (do try [react-accessible-accordion](https://github.com/springload/react-accessible-accordion/) though!).
 
-`pattern-book` just renders the component preview so use any accordion your want ([react-accessible-accordion](https://github.com/springload/react-accessible-accordion/) is good), or put headings between them. Design it however you want.
+### Q. How can I make patterns for an existing website?
 
-## TODO
+One of the advantages of Pattern-Book is that it detects the CSS Rules being applied, so you can put your entire site's CSS files on the page and then write HTML that uses them and Pattern-Book will only display the relevant CSS (no need to manually associate CSS with a particular `<Book>`). This means that it's hopefully a lot less effort to repurpose your existing CSS as a pattern library.
 
-* Pretty-print the HTML / JSX / CSS.
-* Make it support interactive components (with while accumulating the CSS across these multiple states).
-* Make the Book not render until it scrolls into view (pattern libraries are notorious for having hundreds of compnents on a long page, so this is an easy optimisation).
-* Support PropTypes. Sadly I'm not sure how we could support FlowType/TypeScript types because those are removed at compile-time.
-* Tests
+## Features
+
+* [x] Minimal
+* [x] CSS Autodetection, so there's no need to manually associate CSS with a pattern
+* [x] HTML beautifier
+
+## ToDo
+
+* [ ] CSS Beautifier
+* [ ] ZIP download of particular components (including assets, eg backgrounds images and fonts).
+* [ ] CSS Rule blacklist (and whitelist?) per-book
+* [ ] ...and show prop types, somehow? (`prop-types` or Flow/TS?). Sadly I'm not sure how we could support FlowType/TypeScript types because those are removed at compile-time.
+* [ ] Detect basic JSX React Components... this is almost working
+* [ ] Render prop overrides for HTML and CSS (and the whole render()?)
+* [ ] Make it support interactive components (eg accumulating CSS across these multiple states).
+* [ ] Make the `<Book>` not render until it scrolls into view (pattern libraries are notorious for having hundreds of compnents on a long page, so this is hopefully an easy optimisation).
+* [ ] Parse SourceMaps to derive Sass (etc) if possible.

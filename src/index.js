@@ -39,8 +39,6 @@ export default class PatternBook extends PureComponent {
       html: true
     });
 
-    console.log("html", html);
-
     this.setState({
       html
     });
@@ -99,7 +97,7 @@ export default class PatternBook extends PureComponent {
 
     const css = children.map(this.updateCSSChildren).join("");
 
-    // TODO format CSS
+    // TODO pretty format CSS
     this.setState({
       css
     });
@@ -127,19 +125,7 @@ export default class PatternBook extends PureComponent {
     if (!visible) return <div style={{ height }} />;
 
     return (
-      <div className="patternbook">
-        <details className="patternbook__html">
-          <summary>HTML</summary>
-          <pre>{<code>{html}</code> || "(no HTML)"}</pre>
-        </details>
-        <details className="patternbook__jsx">
-          <summary>JSX</summary>
-          <pre>{<code>{jsx}</code> || "(no JSX)"}</pre>
-        </details>
-        <details className="patternbook__css">
-          <summary>CSS</summary>
-          {css || "(no css)"}
-        </details>
+      <div className="pattern-book">
         <div
           ref={container => {
             this.container = container;
@@ -148,6 +134,14 @@ export default class PatternBook extends PureComponent {
         >
           {children}
         </div>
+        <details className="pattern-book__html">
+          <summary>HTML</summary>
+          <pre>{<code>{html}</code> || "(no HTML)"}</pre>
+        </details>
+        <details className="pattern-book__css">
+          <summary>CSS</summary>
+          {css || "(no css)"}
+        </details>
       </div>
     );
   }
