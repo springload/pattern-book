@@ -1,8 +1,8 @@
 {
   "name": "pattern-book",
-  "version": "0.1.2",
+  "version": "0.1.5",
   "description":
-    "Minimal Pattern Library component that renders React/JSX, HTML, and CSS",
+    "Minimal Pattern Library (Style Guide) component  React/JSX, HTML, and CSS",
   "main": "./build/index.js",
   "scripts": {
     "build": "babel src --out-file build/index.js",
@@ -23,7 +23,7 @@
     "jsx",
     "css"
   ],
-  "author": "",
+  "author": "Matthew Holloway",
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.24.1",
