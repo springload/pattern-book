@@ -358,33 +358,12 @@
             background: #ccc;
         }
 
-        .white-page>div {
+        .faq {
             margin: 0 auto;
             max-width: 960px;
             min-height: 100vh;
             font-family: sans-serif;
             hyphens: none;
-        }
-
-        .pull-quote {
-            font-size: xx-large;
-            hyphens: none;
-            -webkit-hyphens: none;
-            -ms-hyphens: none;
-            -moz-hyphens: none;
-        }
-
-        dt {
-            border-bottom: solid 1px #777;
-        }
-
-        dd {
-            margin-bottom: 1rem;
-        }
-
-        dt,
-        dd {
-            font-size: large;
         }
     </style>
 </head>
@@ -425,41 +404,40 @@
 
 <div class="white-page">
 
-    <pre data-markdown>
-        ### Q. This is a pattern library so where's the outdated dev webserver with hot reloading?
+    <pre data-markdown class="faq">
+### Q. This is a pattern library so where's the outdated dev webserver with hot reloading?
 
-        Just use [Create-React-App](https://github.com/facebookincubator/create-react-app) or, add `&lt;Book&gt;` tags to a new route in your app, or use whatever boilerplate you like.
-        
-        `pattern-book` doesn't include one and this is intentional because other projects do it better.
-        
-        ### Q. How does pattern-book organise the page of patterns... with headings, accordions, tabs, or what?
-        
-        It doesn't organise them, so design it however you want!
-        
-        Imagine if your pattern library had 5 components then it probably should be organised quite differently to another library with 1000 components, so this software is unopinionated about organisation. Pattern-Book just renders the component preview so decide for yourself how to organise them (do try [react-accessible-accordion](https://github.com/springload/react-accessible-accordion/) though!).
-        
-        ### Q. How can I make patterns for an existing website?
-        
-        One of the advantages of Pattern-Book is that it detects the CSS Rules being applied, so you can put your entire site's CSS files on the page and then write HTML that uses them and Pattern-Book will only display the relevant CSS (no need to manually associate CSS with a particular `&lt;Book&gt;`). This means that it's hopefully a lot less effort to repurpose your existing CSS as a pattern library.
-        
-        ## Features
-        
-        * [x] Minimal
-        * [x] CSS Autodetection, so there's no need to manually associate CSS with a pattern
-        * [x] HTML beautifier
-        
-        ## ToDo
-        
-        * [ ] CSS Beautifier
-        * [ ] ZIP download of particular components (including assets, eg backgrounds images and fonts).
-        * [ ] CSS Rule blacklist (and whitelist?) per-book
-        * [ ] ...and show prop types, somehow? (`prop-types` or Flow/TS?). Sadly I'm not sure how we could support FlowType/TypeScript types because those are removed at compile-time.
-        * [ ] Detect basic JSX React Components... this is almost working
-        * [ ] Render prop overrides for HTML and CSS (and the whole render()?)
-        * [ ] Make it support interactive components (eg accumulating CSS across these multiple states).
-        * [ ] Make the `&lt;Book&gt;` not render until it scrolls into view (pattern libraries are notorious for having hundreds of compnents on a long page, so this is hopefully an easy optimisation).
-        * [ ] Parse SourceMaps to derive Sass (etc) if possible.
-        
+Just use [Create-React-App](https://github.com/facebookincubator/create-react-app) or, add `&lt;Book&gt;` tags to a new route in your app, or use whatever boilerplate you like.
+
+`pattern-book` doesn't include one and this is intentional because other projects do it better.
+
+### Q. How does pattern-book organise the page of patterns... with headings, accordions, tabs, or what?
+
+It doesn't organise them, so design it however you want!
+
+Imagine if your pattern library had 5 components then it probably should be organised quite differently to another library with 1000 components, so this software is unopinionated about organisation. Pattern-Book just renders the component preview so decide for yourself how to organise them (do try [react-accessible-accordion](https://github.com/springload/react-accessible-accordion/) though!).
+
+### Q. How can I make patterns for an existing website?
+
+One of the advantages of Pattern-Book is that it detects the CSS Rules being applied, so you can put your entire site's CSS files on the page and then write HTML that uses them and Pattern-Book will only display the relevant CSS (no need to manually associate CSS with a particular `&lt;Book&gt;`). This means that it's hopefully a lot less effort to repurpose your existing CSS as a pattern library.
+
+## Features
+
+* [x] Minimal
+* [x] CSS Autodetection, so there's no need to manually associate CSS with a pattern
+* [x] HTML beautifier
+
+## ToDo
+
+* [ ] CSS Beautifier
+* [ ] ZIP download of particular components (including assets, eg backgrounds images and fonts).
+* [ ] CSS Rule blacklist (and whitelist?) per-book
+* [ ] ...and show prop types, somehow? (`prop-types` or Flow/TS?). Sadly I'm not sure how we could support FlowType/TypeScript types because those are removed at compile-time.
+* [ ] Detect basic JSX React Components... this is almost working
+* [ ] Render prop overrides for HTML and CSS (and the whole render()?)
+* [ ] Make it support interactive components (eg accumulating CSS across these multiple states).
+* [ ] Make the `&lt;Book&gt;` not render until it scrolls into view (pattern libraries are notorious for having hundreds of compnents on a long page, so this is hopefully an easy optimisation).
+* [ ] Parse SourceMaps to derive Sass (etc) if possible.
     </pre>
 </div>
 
@@ -477,7 +455,6 @@
         var bookFlipArea = document.getElementById("book-area");
         var installCommand = document.getElementById("install_command");
 
-        console.log(bookFlipArea, installCommand)
         if (bookFlipArea && installCommand) {
             bookFlipArea.addEventListener('click', function () {
                 installCommand.select();
@@ -498,11 +475,17 @@
                 console.error('Markdown lib not found');
                 return;
             }
+
             var md = window.markdownit();
             var markdownsNl = document.querySelectorAll('[data-markdown]');
             const markdowns = Array.prototype.slice.call(markdownsNl);
-            markdowns.map(function (markdown) {
-                markdown.innerHTML = md.render(markdown.innerHTML);
+            console.log(markdowns)
+            markdowns.forEach(function (markdown) {
+                var div = document.createElement('div');
+                div.innerHTML = md.render(markdown.innerHTML.replace(/&lt;/gi, '<').replace(/&gt;/gi, '>'));
+                div.className = markdown.className;
+                markdown.parentNode.insertBefore(div, markdown);
+                markdown.style.display = 'none';
             });
         }());
 </script>

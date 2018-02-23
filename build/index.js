@@ -69,8 +69,6 @@ var PatternBook = function (_PureComponent) {
         html: true
       });
 
-      console.log("html", html);
-
       this.setState({
         html
       });
@@ -125,7 +123,7 @@ var PatternBook = function (_PureComponent) {
 
       var css = children.map(this.updateCSSChildren).join("");
 
-      // TODO format CSS
+      // TODO pretty format CSS
       this.setState({
         css
       });
@@ -164,10 +162,20 @@ var PatternBook = function (_PureComponent) {
 
       return _react2.default.createElement(
         "div",
-        { className: "patternbook" },
+        { className: "pattern-book" },
+        _react2.default.createElement(
+          "div",
+          {
+            ref: function ref(container) {
+              _this2.container = container;
+            },
+            onClick: this.updateBook
+          },
+          children
+        ),
         _react2.default.createElement(
           "details",
-          { className: "patternbook__html" },
+          { className: "pattern-book__html" },
           _react2.default.createElement(
             "summary",
             null,
@@ -185,41 +193,13 @@ var PatternBook = function (_PureComponent) {
         ),
         _react2.default.createElement(
           "details",
-          { className: "patternbook__jsx" },
-          _react2.default.createElement(
-            "summary",
-            null,
-            "JSX"
-          ),
-          _react2.default.createElement(
-            "pre",
-            null,
-            _react2.default.createElement(
-              "code",
-              null,
-              jsx
-            ) || "(no JSX)"
-          )
-        ),
-        _react2.default.createElement(
-          "details",
-          { className: "patternbook__css" },
+          { className: "pattern-book__css" },
           _react2.default.createElement(
             "summary",
             null,
             "CSS"
           ),
           css || "(no css)"
-        ),
-        _react2.default.createElement(
-          "div",
-          {
-            ref: function ref(container) {
-              _this2.container = container;
-            },
-            onClick: this.updateBook
-          },
-          children
         )
       );
     }
