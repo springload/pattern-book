@@ -1,8 +1,7 @@
 <p align="center">
-  <img width="245" height="378" src="/logo.png">
+  <img width="245" height="378" src="/logo.png" alt="Pattern Book">
+  _It's not a pattern library, it's a pattern book, so make your own library!_
 </p>
-
-_It's not a pattern library, it's a pattern book, so make your own library!_
 
 ---
 
@@ -24,6 +23,7 @@ class PatternLibrary extends Component {
         <h4>Patterns</h4>
         <h5>Heading Patterns</h5>
         <hr />
+
         <Book>
           <h6>My Heading 6</h6>
         </Book>
@@ -38,6 +38,7 @@ Will look like
 <blockquote>
     <h4>Patterns</h4>
     <h5>Heading Patterns</h5>
+    <hr>
     <div>
       <h6>My Heading 6</h6>
       <details><summary>HTML</summary>&lt;h6&gt;My Heading 6&lt;/h6&gt;</details>
