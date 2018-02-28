@@ -70,7 +70,7 @@ var PatternBook = function (_PureComponent) {
       });
 
       this.setState({
-        html
+        html: html
       });
     }
   }, {
@@ -86,7 +86,7 @@ var PatternBook = function (_PureComponent) {
       });
 
       this.setState({
-        jsx
+        jsx: jsx
       });
     }
   }, {
@@ -102,8 +102,8 @@ var PatternBook = function (_PureComponent) {
       Object.keys(child.props).filter(function (key) {
         return key !== "children";
       }).forEach(function (key) {
-        tag += ` ${key}=`;
-        tag += typeof child.props[key] === "string" ? `"${child.props[key]}"` : `{${child.props[key]}}`;
+        tag += " " + key + "=";
+        tag += typeof child.props[key] === "string" ? "\"" + child.props[key] + "\"" : "{" + child.props[key] + "}";
       });
       if (child.props.children) {
         tag += ">";
@@ -126,7 +126,7 @@ var PatternBook = function (_PureComponent) {
 
       // TODO pretty format CSS
       this.setState({
-        css
+        css: css
       });
     }
   }, {
@@ -136,7 +136,7 @@ var PatternBook = function (_PureComponent) {
       var css = "";
       var style = child.getAttribute("style");
       if (style) {
-        css += `/* inline style on '${child.name}' ${style} */\n`;
+        css += "/* inline style on '" + child.name + "' " + style + " */\n";
       }
       css += getCSS(child);
       if (child.childNodes) {
@@ -163,7 +163,7 @@ var PatternBook = function (_PureComponent) {
           css = _state.css;
 
 
-      if (!visible) return _react2.default.createElement("div", { style: { height } });
+      if (!visible) return _react2.default.createElement("div", { style: { height: height } });
 
       var kids = _react2.default.createElement(
         "div",
