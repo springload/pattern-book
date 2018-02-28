@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import Beautify from "xml-zero-beautify";
+import Beautify, { OUTPUT_FORMATS } from "xml-zero-beautify";
 
 const DEFAULT_HEIGHT = 100;
 
@@ -35,8 +35,8 @@ export default class PatternBook extends PureComponent {
 
   updateHTML() {
     const html = Beautify(this.container.innerHTML, {
-      beautify: true,
-      html: true
+      html: true,
+      output: OUTPUT_FORMATS.html
     });
 
     this.setState({
@@ -49,7 +49,8 @@ export default class PatternBook extends PureComponent {
     let jsx = React.Children.map(children, this.updateJSXChildren).join("");
 
     jsx = Beautify(this.container.innerHTML, {
-      beautify: true
+      html: true,
+      output: OUTPUT_FORMATS.html
     });
 
     this.setState({
@@ -136,11 +137,11 @@ export default class PatternBook extends PureComponent {
         </div>
         <details className="pattern-book__html">
           <summary>HTML</summary>
-          <pre>{<code>{html}</code> || "(no HTML)"}</pre>
+          {<code>{html}</code> || "(no HTML)"}
         </details>
         <details className="pattern-book__css">
           <summary>CSS</summary>
-          {css || "(no css)"}
+          {<code>{css}</code> || "(no css)"}
         </details>
       </div>
     );

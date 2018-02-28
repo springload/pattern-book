@@ -65,8 +65,8 @@ var PatternBook = function (_PureComponent) {
     key: "updateHTML",
     value: function updateHTML() {
       var html = (0, _xmlZeroBeautify2.default)(this.container.innerHTML, {
-        beautify: true,
-        html: true
+        html: true,
+        output: _xmlZeroBeautify.OUTPUT_FORMATS.html
       });
 
       this.setState({
@@ -81,7 +81,8 @@ var PatternBook = function (_PureComponent) {
       var jsx = _react2.default.Children.map(children, this.updateJSXChildren).join("");
 
       jsx = (0, _xmlZeroBeautify2.default)(this.container.innerHTML, {
-        beautify: true
+        html: true,
+        output: _xmlZeroBeautify.OUTPUT_FORMATS.html
       });
 
       this.setState({
@@ -182,14 +183,10 @@ var PatternBook = function (_PureComponent) {
             "HTML"
           ),
           _react2.default.createElement(
-            "pre",
+            "code",
             null,
-            _react2.default.createElement(
-              "code",
-              null,
-              html
-            ) || "(no HTML)"
-          )
+            html
+          ) || "(no HTML)"
         ),
         _react2.default.createElement(
           "details",
@@ -199,7 +196,11 @@ var PatternBook = function (_PureComponent) {
             null,
             "CSS"
           ),
-          css || "(no css)"
+          _react2.default.createElement(
+            "code",
+            null,
+            css
+          ) || "(no css)"
         )
       );
     }
