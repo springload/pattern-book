@@ -182,11 +182,7 @@ var PatternBook = function (_PureComponent) {
             null,
             "HTML"
           ),
-          _react2.default.createElement(
-            "code",
-            null,
-            html
-          ) || "(no HTML)"
+          _react2.default.createElement("code", { dangerouslySetInnerHTML: { html } }) || "(no HTML)"
         ),
         _react2.default.createElement(
           "details",

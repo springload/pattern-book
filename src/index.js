@@ -137,7 +137,7 @@ export default class PatternBook extends PureComponent {
         </div>
         <details className="pattern-book__html">
           <summary>HTML</summary>
-          {<code dangerouslySetInnerHTML={html} /> || "(no HTML)"}
+          {<code dangerouslySetInnerHTML={{ html }} /> || "(no HTML)"}
         </details>
         <details className="pattern-book__css">
           <summary>CSS</summary>
