@@ -170,7 +170,8 @@ var PatternBook = function (_PureComponent) {
             ref: function ref(container) {
               _this2.container = container;
             },
-            onClick: this.updateBook
+            onClick: this.updateBook,
+            className: "pattern-book__example"
           },
           children
         ),
@@ -182,7 +183,7 @@ var PatternBook = function (_PureComponent) {
             null,
             "HTML"
           ),
-          _react2.default.createElement("code", { dangerouslySetInnerHTML: { html } }) || "(no HTML)"
+          _react2.default.createElement("code", { dangerouslySetInnerHTML: { __html: html } }) || "(no HTML)"
         ),
         _react2.default.createElement(
           "details",

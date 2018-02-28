@@ -132,6 +132,7 @@ export default class PatternBook extends PureComponent {
             this.container = container;
           }}
           onClick={this.updateBook}
+          className="pattern-book__example"
         >
           {children}
         </div>
