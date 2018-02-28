@@ -165,20 +165,22 @@ var PatternBook = function (_PureComponent) {
 
       if (!visible) return _react2.default.createElement("div", { style: { height } });
 
+      var kids = _react2.default.createElement(
+        "div",
+        {
+          ref: function ref(container) {
+            _this2.container = container;
+          },
+          onClick: this.updateBook,
+          className: "pattern-book__example"
+        },
+        children
+      );
+
       return _react2.default.createElement(
         "div",
         { className: "pattern-book" },
-        _react2.default.createElement(
-          "div",
-          {
-            ref: function ref(container) {
-              _this2.container = container;
-            },
-            onClick: this.updateBook,
-            className: "pattern-book__example"
-          },
-          renderChildren ? renderChildren(children) : children
-        ),
+        renderChildren ? renderChildren(kids) : kids,
         _react2.default.createElement(
           "details",
           { className: "pattern-book__html" },
