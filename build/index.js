@@ -150,7 +150,11 @@ var PatternBook = function (_PureComponent) {
     value: function render() {
       var _this2 = this;
 
-      var children = this.props.children;
+      var _props = this.props,
+          renderChildren = _props.renderChildren,
+          children = _props.children,
+          renderHTML = _props.renderHTML,
+          renderCSS = _props.renderCSS;
       var _state = this.state,
           visible = _state.visible,
           height = _state.height,
@@ -173,7 +177,7 @@ var PatternBook = function (_PureComponent) {
             onClick: this.updateBook,
             className: "pattern-book__example"
           },
-          children
+          renderChildren ? renderChildren(children) : children
         ),
         _react2.default.createElement(
           "details",
@@ -183,7 +187,7 @@ var PatternBook = function (_PureComponent) {
             null,
             "HTML"
           ),
-          _react2.default.createElement("code", { dangerouslySetInnerHTML: { __html: html } }) || "(no HTML)"
+          renderHTML ? renderHTML(html) : _react2.default.createElement("code", { dangerouslySetInnerHTML: { __html: html } })
         ),
         _react2.default.createElement(
           "details",
@@ -193,11 +197,11 @@ var PatternBook = function (_PureComponent) {
             null,
             "CSS"
           ),
-          _react2.default.createElement(
+          renderCSS ? renderCSS(css) : _react2.default.createElement(
             "code",
             null,
             css
-          ) || "(no css)"
+          )
         )
       );
     }

@@ -120,29 +120,37 @@ export default class PatternBook extends PureComponent {
   }
 
   render() {
-    const { children } = this.props;
+    const { renderChildren, children, renderHTML, renderCSS } = this.props;
     const { visible, height, html, jsx, css } = this.state;
 
     if (!visible) return <div style={{ height }} />;
 
+    const kids = (
+      <div
+        ref={container => {
+          this.container = container;
+        }}
+        onClick={this.updateBook}
+        className="pattern-book__example"
+      >
+        {children}
+      </div>
+    );
+
     return (
       <div className="pattern-book">
-        <div
-          ref={container => {
-            this.container = container;
-          }}
-          onClick={this.updateBook}
-          className="pattern-book__example"
-        >
-          {children}
-        </div>
+        {renderChildren ? renderChildren(kids) : kids}
         <details className="pattern-book__html">
           <summary>HTML</summary>
-          {<code dangerouslySetInnerHTML={{ __html: html }} /> || "(no HTML)"}
+          {renderHTML ? (
+            renderHTML(html)
+          ) : (
+            <code dangerouslySetInnerHTML={{ __html: html }} />
+          )}
         </details>
         <details className="pattern-book__css">
           <summary>CSS</summary>
-          {<code>{css}</code> || "(no css)"}
+          {renderCSS ? renderCSS(css) : <code>{css}</code>}
         </details>
       </div>
     );
