@@ -158,7 +158,7 @@ export default class PatternBook extends PureComponent {
 }
 
 let getCSS = el => {
-  var sheets = document.styleSheets,
+  var sheets = window.document.styleSheets,
     ret = [];
   el.matches =
     el.matches ||

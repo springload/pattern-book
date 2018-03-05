@@ -1,8 +1,7 @@
 {
   "name": "pattern-book",
   "version": "0.3.0",
-  "description":
-    "Minimal Pattern Library (style guide) React component for displaying HTML and CSS",
+  "description": "Minimal Pattern Library (style guide) React component for displaying HTML and CSS",
   "main": "./build/index.js",
   "scripts": {
     "build": "babel src --out-file build/index.js",
@@ -35,7 +34,8 @@
     "babel-register": "^6.26.0",
     "benchmark": "^2.1.4",
     "jest": "^21.0.2",
-    "memwatch-next": "^0.3.0"
+    "memwatch-next": "^0.3.0",
+    "react": ">15"
   },
   "peerDependencies": {
     "react": ">15"
@@ -53,9 +53,18 @@
       ],
       "react"
     ],
-    "plugins": [["transform-react-jsx"], ["transform-object-rest-spread"]]
+    "plugins": [
+      [
+        "transform-react-jsx"
+      ],
+      [
+        "transform-object-rest-spread"
+      ]
+    ]
   },
   "dependencies": {
+    "cssom": "^0.3.2",
+    "react-test-renderer": "^16.2.0",
     "xml-zero-beautify": "^2.0.4"
   }
 }
