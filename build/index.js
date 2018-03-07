@@ -216,7 +216,7 @@ exports.default = PatternBook;
 
 
 var getCSS = function getCSS(el) {
-  var sheets = document.styleSheets,
+  var sheets = window.document.styleSheets,
       ret = [];
   el.matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector || el.oMatchesSelector;
   for (var i in sheets) {

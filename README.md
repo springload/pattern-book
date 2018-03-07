@@ -49,7 +49,9 @@ Will look like
 
 <p>`pattern-book` doesn't include a dev server because other projects do it better.
 
-<p>So instead just use [Create-React-App](https://github.com/facebookincubator/create-react-app) or, add `&lt;Book&gt;` tags to a new route in your app, or use whatever boilerplate you like.
+<p>So instead just use <a href="https://github.com/facebookincubator/create-react-app">Create-React-App</a> or, add `&lt;Book&gt;` tags to a new route in your existing app, or use whatever boilerplate you like.</p>
+
+<p>Pattern-Book is very specifically targetting just the render and code preview of your components.</p>
 
 <h2>Q. How does pattern-book organise the page of patterns... with headings, accordions, tabs, or what?</h2>
 
