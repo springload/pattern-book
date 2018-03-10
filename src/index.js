@@ -1,5 +1,10 @@
 import React, { PureComponent } from "react";
-import Beautify, { OUTPUT_FORMATS } from "xml-zero-beautify";
+import XMLBeautify, {
+  OUTPUT_FORMATS as XML_OUTPUT_FORMATS
+} from "xml-zero-beautify";
+import CSSBeautify, {
+  OUTPUT_FORMATS as CSS_OUTPUT_FORMATS
+} from "css-zero-beautify";
 
 const DEFAULT_HEIGHT = 100;
 
@@ -34,9 +39,9 @@ export default class PatternBook extends PureComponent {
   }
 
   updateHTML() {
-    const html = Beautify(this.container.innerHTML, {
+    const html = XMLBeautify(this.container.innerHTML, {
       html: true,
-      output: OUTPUT_FORMATS.html
+      output: XML_OUTPUT_FORMATS.html
     });
 
     this.setState({
@@ -48,9 +53,9 @@ export default class PatternBook extends PureComponent {
     const { children } = this.props;
     let jsx = React.Children.map(children, this.updateJSXChildren).join("");
 
-    jsx = Beautify(this.container.innerHTML, {
+    jsx = XMLBeautify(this.container.innerHTML, {
       html: true,
-      output: OUTPUT_FORMATS.html
+      output: XML_OUTPUT_FORMATS.html
     });
 
     this.setState({
@@ -96,7 +101,11 @@ export default class PatternBook extends PureComponent {
     const childNodes = this.container.childNodes;
     const children = Array.prototype.slice.call(childNodes);
 
-    const css = children.map(this.updateCSSChildren).join("");
+    let css = children.map(this.updateCSSChildren).join("");
+
+    css = CSSBeautify(css, {
+      output: CSS_OUTPUT_FORMATS.html
+    });
 
     // TODO pretty format CSS
     this.setState({
@@ -150,7 +159,11 @@ export default class PatternBook extends PureComponent {
         </details>
         <details className="pattern-book__css">
           <summary>CSS</summary>
-          {renderCSS ? renderCSS(css) : <code>{css}</code>}
+          {renderCSS ? (
+            renderCSS(css)
+          ) : (
+            <code dangerouslySetInnerHTML={{ __html: css }} />
+          )}
         </details>
       </div>
     );

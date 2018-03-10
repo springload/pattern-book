@@ -1007,7 +1007,17 @@ cryptiles@3.x.x:
   dependencies:
     boom "5.x.x"
 
-cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0", cssom@^0.3.2:
+css-zero-beautify@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/css-zero-beautify/-/css-zero-beautify-2.0.1.tgz#4de667ff01af4035c9e25d7fd93c97d23b9400a3"
+  dependencies:
+    css-zero-lexer "^0.0.4"
+
+css-zero-lexer@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/css-zero-lexer/-/css-zero-lexer-0.0.4.tgz#92ef55b6ae0bfd9924d0d4b03c084b9e8376d91e"
+
+cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/cssom/-/cssom-0.3.2.tgz#b8036170c79f07a90ff2f16e22284027a243848b"
 

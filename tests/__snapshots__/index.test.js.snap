@@ -35,9 +35,13 @@ exports[`renders correctly 1`] = `
     <summary>
       CSS
     </summary>
-    <code>
-      
-    </code>
+    <code
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "",
+        }
+      }
+    />
   </details>
 </div>
 `;
