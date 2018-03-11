@@ -14,6 +14,10 @@ var _xmlZeroBeautify = require("xml-zero-beautify");
 
 var _xmlZeroBeautify2 = _interopRequireDefault(_xmlZeroBeautify);
 
+var _cssZeroBeautify = require("css-zero-beautify");
+
+var _cssZeroBeautify2 = _interopRequireDefault(_cssZeroBeautify);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -124,6 +128,10 @@ var PatternBook = function (_PureComponent) {
 
       var css = children.map(this.updateCSSChildren).join("");
 
+      css = (0, _cssZeroBeautify2.default)(css, {
+        output: _cssZeroBeautify.OUTPUT_FORMATS.html
+      });
+
       // TODO pretty format CSS
       this.setState({
         css: css
@@ -199,11 +207,7 @@ var PatternBook = function (_PureComponent) {
             null,
             "CSS"
           ),
-          renderCSS ? renderCSS(css) : _react2.default.createElement(
-            "code",
-            null,
-            css
-          )
+          renderCSS ? renderCSS(css) : _react2.default.createElement("code", { dangerouslySetInnerHTML: { __html: css } })
         )
       );
     }
