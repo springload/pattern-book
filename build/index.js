@@ -20,6 +20,8 @@ var _cssZeroBeautify2 = _interopRequireDefault(_cssZeroBeautify);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -64,6 +66,7 @@ var PatternBook = function (_PureComponent) {
       this.updateHTML();
       this.updateJSX();
       this.updateCSS();
+      // this.updateJSX();
     }
   }, {
     key: "updateHTML",
@@ -73,9 +76,7 @@ var PatternBook = function (_PureComponent) {
         output: _xmlZeroBeautify.OUTPUT_FORMATS.html
       });
 
-      this.setState({
-        html: html
-      });
+      this.setState({ html: html });
     }
   }, {
     key: "updateJSX",
@@ -123,32 +124,28 @@ var PatternBook = function (_PureComponent) {
   }, {
     key: "updateCSS",
     value: function updateCSS() {
-      var childNodes = this.container.childNodes;
-      var children = Array.prototype.slice.call(childNodes);
+      var children = [].concat(_toConsumableArray(this.container.childNodes));
 
-      var css = children.map(this.updateCSSChildren).join("");
+      var rawCSS = children.map(this.updateCSSChildren).join("");
 
-      css = (0, _cssZeroBeautify2.default)(css, {
+      var css = (0, _cssZeroBeautify2.default)(rawCSS, {
         output: _cssZeroBeautify.OUTPUT_FORMATS.html
       });
 
-      // TODO pretty format CSS
-      this.setState({
-        css: css
-      });
+      this.setState({ css: css });
     }
   }, {
     key: "updateCSSChildren",
     value: function updateCSSChildren(child) {
-      if (!child.getAttribute) return; // probable text node
+      if (!child.getAttribute) return; // probable text node which can't have CSS
       var css = "";
       var style = child.getAttribute("style");
       if (style) {
         css += "/* inline style on '" + child.name + "' " + style + " */\n";
       }
-      css += getCSS(child);
+      css += getCSS(child).join("");
       if (child.childNodes) {
-        var children = Array.prototype.slice.call(child.childNodes);
+        var children = [].concat(_toConsumableArray(child.childNodes));
         css += children.map(this.updateCSSChildren).join("");
       }
       return css;
@@ -220,16 +217,39 @@ exports.default = PatternBook;
 
 
 var getCSS = function getCSS(el) {
-  var sheets = window.document.styleSheets,
-      ret = [];
+  var sheets = window.document.styleSheets;
+  var matchedRules = [];
+
   el.matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector || el.oMatchesSelector;
+
   for (var i in sheets) {
     var rules = sheets[i].rules || sheets[i].cssRules;
-    for (var r in rules) {
-      if (el.matches(rules[r].selectorText)) {
-        ret.push(rules[r].cssText);
+    matchedRules = matchedRules.concat(testRules(el, rules));
+  }
+  return matchedRules;
+};
+
+var testRules = function testRules(el, rules) {
+  var matchedRules = [];
+  for (var r in rules) {
+    var rule = rules[r];
+    if (rule.selectorText) {
+      if (el.matches(rule.selectorText)) {
+        matchedRules.push(rule.cssText);
+      }
+    } else if (rule.rules || rule.cssRules) {
+      // a nested rule like @media { rule { ... } }
+      var nestedRules = testRules(el, rule.rules || rule.cssRules);
+      if (nestedRules.length) {
+        // TODO: distinguish between other nested types?
+        var cssText = "@media ";
+        cssText += rule.conditionText;
+        cssText += " {";
+        cssText += nestedRules.join(" ");
+        cssText += "}";
+        matchedRules.push(cssText);
       }
     }
   }
-  return ret;
+  return matchedRules;
 };

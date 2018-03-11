@@ -16,14 +16,14 @@ export default class PatternBook extends PureComponent {
       visible: true,
       height: props.height || DEFAULT_HEIGHT,
       html: [],
-      jsx: [],
+      // jsx: [],
       css: []
     };
 
     this.updateBook = this.updateBook.bind(this);
     this.updateHTML = this.updateHTML.bind(this);
-    this.updateJSX = this.updateJSX.bind(this);
-    this.updateJSXChildren = this.updateJSXChildren.bind(this);
+    // this.updateJSX = this.updateJSX.bind(this);
+    // this.updateJSXChildren = this.updateJSXChildren.bind(this);
     this.updateCSS = this.updateCSS.bind(this);
     this.updateCSSChildren = this.updateCSSChildren.bind(this);
   }
@@ -34,7 +34,6 @@ export default class PatternBook extends PureComponent {
 
   updateBook() {
     this.updateHTML();
-    this.updateJSX();
     this.updateCSS();
     // this.updateJSX();
   }
@@ -99,7 +98,24 @@ export default class PatternBook extends PureComponent {
   updateCSS() {
     const children = [...this.container.childNodes];
 
-    const rawCSS = children.map(this.updateCSSChildren).join("");
+    const cssChildren = [].concat
+      .apply(
+        [], children.map(this.updateCSSChildren)
+      ).sort((a, b) => a[0] > b[0]);
+
+    const cssChildrenKeys = cssChildren.map(cssChild => cssChild && cssChild[0]);
+
+    const rawCSS = cssChildren
+      .filter((cssChild, i) => {
+        if (!cssChild) return false;
+        const cssChildrenKeysIndex = cssChildrenKeys.indexOf(cssChild[0]);
+        return (
+          cssChildrenKeysIndex === i || // if it's not unique
+          cssChild[1] !== cssChildren[cssChildrenKeysIndex][1] // OR if it's different CSS. eg. different matching CSS rules inside a @media
+        );
+      })
+      .map(cssChild => cssChild[1])
+      .join("");
 
     const css = CSSBeautify(rawCSS, {
       output: CSS_OUTPUT_FORMATS.html
@@ -110,15 +126,15 @@ export default class PatternBook extends PureComponent {
 
   updateCSSChildren(child) {
     if (!child.getAttribute) return; // probable text node which can't have CSS
-    let css = "";
+    let css = [];
     const style = child.getAttribute("style");
     if (style) {
-      css += `/* inline style on '${child.name}' ${style} */\n`;
+      css.push(`/* inline style on '${child.name}' ${style} */\n`);
     }
-    css += getCSS(child).join("");
+    css = css.concat(getCSS(child));
     if (child.childNodes) {
       const children = [...child.childNodes];
-      css += children.map(this.updateCSSChildren).join("");
+      css = [].concat.apply(css, children.map(this.updateCSSChildren));
     }
     return css;
   }
@@ -149,16 +165,16 @@ export default class PatternBook extends PureComponent {
           {renderHTML ? (
             renderHTML(html)
           ) : (
-            <code dangerouslySetInnerHTML={{ __html: html }} />
-          )}
+              <code dangerouslySetInnerHTML={{ __html: html }} />
+            )}
         </details>
         <details className="pattern-book__css">
           <summary>CSS</summary>
           {renderCSS ? (
             renderCSS(css)
           ) : (
-            <code dangerouslySetInnerHTML={{ __html: css }} />
-          )}
+              <code dangerouslySetInnerHTML={{ __html: css }} />
+            )}
         </details>
       </div>
     );
@@ -178,30 +194,36 @@ const getCSS = el => {
 
   for (let i in sheets) {
     let rules = sheets[i].rules || sheets[i].cssRules;
-    matchedRules = matchedRules.concat(testRules(el, rules));
+    matchedRules = matchedRules.concat(testRules(el, rules, i));
   }
   return matchedRules;
 };
 
-const testRules = (el, rules) => {
+const testRules = (el, rules, groupId) => {
   const matchedRules = [];
-  for (let r in rules) {
-    const rule = rules[r];
+  for (let i in rules) {
+    const rule = rules[i];
+    const ruleGroupId = `${groupId}-${i}`;
     if (rule.selectorText) {
       if (el.matches(rule.selectorText)) {
-        matchedRules.push(rule.cssText);
+        matchedRules.push([ruleGroupId, rule.cssText]);
       }
     } else if (rule.rules || rule.cssRules) {
       // a nested rule like @media { rule { ... } }
-      const nestedRules = testRules(el, rule.rules || rule.cssRules);
+      // so we test the rules inside
+      const nestedRules = testRules(
+        el,
+        rule.rules || rule.cssRules,
+        ruleGroupId
+      );
       if (nestedRules.length) {
         // TODO: distinguish between other nested types?
         let cssText = "@media ";
         cssText += rule.conditionText;
         cssText += " {";
-        cssText += nestedRules.join(" ");
+        cssText += nestedRules.map(rule => rule[1]).join(" ");
         cssText += "}";
-        matchedRules.push(cssText);
+        matchedRules.push([ruleGroupId, cssText]);
       }
     }
   }

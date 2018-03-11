@@ -1,6 +1,6 @@
 {
   "name": "pattern-book",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description":
     "Minimal Pattern Library (style guide) React component for displaying HTML and CSS",
   "main": "./build/index.js",
@@ -37,7 +37,7 @@
     "jest": "^21.0.2",
     "memwatch-next": "^0.3.0",
     "react": ">15",
-    "react-test-renderer": "^16.2.0"
+    "react-test-renderer": ">15"
   },
   "peerDependencies": {
     "react": ">15"
