@@ -1,6 +1,6 @@
 {
   "name": "pattern-book",
-  "version": "0.3.3",
+  "version": "1.0.0",
   "description":
     "Minimal Pattern Library (style guide) React component for displaying HTML and CSS",
   "main": "./build/index.js",

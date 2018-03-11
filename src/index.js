@@ -36,6 +36,7 @@ export default class PatternBook extends PureComponent {
     this.updateHTML();
     this.updateJSX();
     this.updateCSS();
+    // this.updateJSX();
   }
 
   updateHTML() {
@@ -44,9 +45,7 @@ export default class PatternBook extends PureComponent {
       output: XML_OUTPUT_FORMATS.html
     });
 
-    this.setState({
-      html
-    });
+    this.setState({ html });
   }
 
   updateJSX() {
@@ -98,31 +97,27 @@ export default class PatternBook extends PureComponent {
   }
 
   updateCSS() {
-    const childNodes = this.container.childNodes;
-    const children = Array.prototype.slice.call(childNodes);
+    const children = [...this.container.childNodes];
 
-    let css = children.map(this.updateCSSChildren).join("");
+    const rawCSS = children.map(this.updateCSSChildren).join("");
 
-    css = CSSBeautify(css, {
+    const css = CSSBeautify(rawCSS, {
       output: CSS_OUTPUT_FORMATS.html
     });
 
-    // TODO pretty format CSS
-    this.setState({
-      css
-    });
+    this.setState({ css });
   }
 
   updateCSSChildren(child) {
-    if (!child.getAttribute) return; // probable text node
+    if (!child.getAttribute) return; // probable text node which can't have CSS
     let css = "";
     const style = child.getAttribute("style");
     if (style) {
       css += `/* inline style on '${child.name}' ${style} */\n`;
     }
-    css += getCSS(child);
+    css += getCSS(child).join("");
     if (child.childNodes) {
-      const children = Array.prototype.slice.call(child.childNodes);
+      const children = [...child.childNodes];
       css += children.map(this.updateCSSChildren).join("");
     }
     return css;
@@ -170,22 +165,45 @@ export default class PatternBook extends PureComponent {
   }
 }
 
-let getCSS = el => {
-  var sheets = window.document.styleSheets,
-    ret = [];
+const getCSS = el => {
+  const sheets = window.document.styleSheets;
+  let matchedRules = [];
+
   el.matches =
     el.matches ||
     el.webkitMatchesSelector ||
     el.mozMatchesSelector ||
     el.msMatchesSelector ||
     el.oMatchesSelector;
-  for (var i in sheets) {
-    var rules = sheets[i].rules || sheets[i].cssRules;
-    for (var r in rules) {
-      if (el.matches(rules[r].selectorText)) {
-        ret.push(rules[r].cssText);
+
+  for (let i in sheets) {
+    let rules = sheets[i].rules || sheets[i].cssRules;
+    matchedRules = matchedRules.concat(testRules(el, rules));
+  }
+  return matchedRules;
+};
+
+const testRules = (el, rules) => {
+  const matchedRules = [];
+  for (let r in rules) {
+    const rule = rules[r];
+    if (rule.selectorText) {
+      if (el.matches(rule.selectorText)) {
+        matchedRules.push(rule.cssText);
+      }
+    } else if (rule.rules || rule.cssRules) {
+      // a nested rule like @media { rule { ... } }
+      const nestedRules = testRules(el, rule.rules || rule.cssRules);
+      if (nestedRules.length) {
+        // TODO: distinguish between other nested types?
+        let cssText = "@media ";
+        cssText += rule.conditionText;
+        cssText += " {";
+        cssText += nestedRules.join(" ");
+        cssText += "}";
+        matchedRules.push(cssText);
       }
     }
   }
-  return ret;
+  return matchedRules;
 };
