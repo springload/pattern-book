@@ -25,7 +25,6 @@ export default class PatternBook extends PureComponent {
     // this.updateJSX = this.updateJSX.bind(this);
     // this.updateJSXChildren = this.updateJSXChildren.bind(this);
     this.updateCSS = this.updateCSS.bind(this);
-    this.updateCSSChildren = this.updateCSSChildren.bind(this);
   }
 
   componentDidMount() {
@@ -96,47 +95,12 @@ export default class PatternBook extends PureComponent {
   }
 
   updateCSS() {
-    const children = [...this.container.childNodes];
-
-    const cssChildren = [].concat
-      .apply(
-        [], children.map(this.updateCSSChildren)
-      ).sort((a, b) => a[0] > b[0]);
-
-    const cssChildrenKeys = cssChildren.map(cssChild => cssChild && cssChild[0]);
-
-    const rawCSS = cssChildren
-      .filter((cssChild, i) => {
-        if (!cssChild) return false;
-        const cssChildrenKeysIndex = cssChildrenKeys.indexOf(cssChild[0]);
-        return (
-          cssChildrenKeysIndex === i || // if it's not unique
-          cssChild[1] !== cssChildren[cssChildrenKeysIndex][1] // OR if it's different CSS. eg. different matching CSS rules inside a @media
-        );
-      })
-      .map(cssChild => cssChild[1])
-      .join("");
-
+    const rules = CSSSniff.getCSSRules([...this.container.childNodes]);
+    const rawCSS = CSSSniff.serialize(rules);
     const css = CSSBeautify(rawCSS, {
       output: CSS_OUTPUT_FORMATS.html
     });
-
     this.setState({ css });
-  }
-
-  updateCSSChildren(child) {
-    if (!child.getAttribute) return; // probable text node which can't have CSS
-    let css = [];
-    const style = child.getAttribute("style");
-    if (style) {
-      css.push(`/* inline style on '${child.name}' ${style} */\n`);
-    }
-    css = css.concat(getCSS(child));
-    if (child.childNodes) {
-      const children = [...child.childNodes];
-      css = [].concat.apply(css, children.map(this.updateCSSChildren));
-    }
-    return css;
   }
 
   render() {
@@ -165,67 +129,114 @@ export default class PatternBook extends PureComponent {
           {renderHTML ? (
             renderHTML(html)
           ) : (
-              <code dangerouslySetInnerHTML={{ __html: html }} />
-            )}
+            <code dangerouslySetInnerHTML={{ __html: html }} />
+          )}
         </details>
         <details className="pattern-book__css">
           <summary>CSS</summary>
           {renderCSS ? (
             renderCSS(css)
           ) : (
-              <code dangerouslySetInnerHTML={{ __html: css }} />
-            )}
+            <code dangerouslySetInnerHTML={{ __html: css }} />
+          )}
         </details>
       </div>
     );
   }
 }
 
-const getCSS = el => {
-  const sheets = window.document.styleSheets;
-  let matchedRules = [];
-
-  el.matches =
-    el.matches ||
-    el.webkitMatchesSelector ||
-    el.mozMatchesSelector ||
-    el.msMatchesSelector ||
-    el.oMatchesSelector;
-
-  for (let i in sheets) {
-    let rules = sheets[i].rules || sheets[i].cssRules;
-    matchedRules = matchedRules.concat(testRules(el, rules, i));
+class CSSSniff {
+  static serialize(rules) {
+    return Object.keys(rules)
+      .map(key => {
+        const rule = rules[key];
+        let css = "";
+        if (rule.selectors) {
+          css += rule.selectors.join(",");
+          css += rule.properties;
+        } else if (rule.before) {
+          css += rule.before;
+          css += CSSSniff.serialize(rule.children);
+          css += rule.after;
+        } else if (rule instanceof Object) {
+          css += CSSSniff.serialize(rule);
+        }
+        return css;
+      })
+      .join("");
   }
-  return matchedRules;
-};
 
-const testRules = (el, rules, groupId) => {
-  const matchedRules = [];
-  for (let i in rules) {
-    const rule = rules[i];
-    const ruleGroupId = `${groupId}-${i}`;
-    if (rule.selectorText) {
-      if (el.matches(rule.selectorText)) {
-        matchedRules.push([ruleGroupId, rule.cssText]);
-      }
-    } else if (rule.rules || rule.cssRules) {
-      // a nested rule like @media { rule { ... } }
-      // so we test the rules inside
-      const nestedRules = testRules(
+  static getCSSRules(children, matchedCSS) {
+    return children.reduce((matchedCSS, child, i) => {
+      matchedCSS = CSSSniff.getCSSRulesByElement(child, matchedCSS);
+      if (child.childNodes)
+        matchedCSS = CSSSniff.getCSSRules([...child.childNodes], matchedCSS);
+      return matchedCSS;
+    }, matchedCSS || {});
+  }
+
+  static getCSSRulesByElement(el, matchedCSS) {
+    el.matches =
+      el.matches ||
+      el.webkitMatchesSelector ||
+      el.mozMatchesSelector ||
+      el.msMatchesSelector ||
+      el.oMatchesSelector;
+    if (!el.matches) return matchedCSS; // presumed text node
+
+    const sheets = window.document.styleSheets;
+    for (let i in sheets) {
+      const matchedCSSRule = CSSSniff._filterCSSRulesByElement(
         el,
-        rule.rules || rule.cssRules,
-        ruleGroupId
+        sheets[i].rules || sheets[i].cssRules,
+        matchedCSS[i] || {}
       );
-      if (nestedRules.length) {
-        // TODO: distinguish between other nested types?
-        let cssText = "@media ";
-        cssText += rule.conditionText;
-        cssText += " {";
-        cssText += nestedRules.map(rule => rule[1]).join(" ");
-        cssText += "}";
-        matchedRules.push([ruleGroupId, cssText]);
+      if (matchedCSSRule) {
+        matchedCSS[i] = matchedCSSRule;
       }
     }
+    return matchedCSS;
   }
-  return matchedRules;
-};
+
+  static _filterCSSRulesByElement(el, rules, matchedCSS) {
+    for (let i in rules) {
+      const rule = rules[i];
+      if (rule.selectorText) {
+        // TODO split selectorText by separator
+        // eg
+        // selector = 'a,b'  -->  ['a','b']
+        // BUT ALSO
+        // selector = 'a[attr=','],b'  -->  'a[attr=\',\']', 'b']
+        // Currently the splitting is naive
+        const selectors = rule.selectorText.split(",");
+        selectors.forEach(selector => {
+          if (el.matches(selector)) {
+            matchedCSS[i] = {
+              selectors: (matchedCSS[i] && matchedCSS[i].selectors) || [],
+              properties: rule.cssText.substring(rule.cssText.indexOf("{"))
+            };
+            if (matchedCSS[i].selectors.indexOf(selector) === -1) {
+              matchedCSS[i].selectors.push(selector);
+            }
+          }
+        });
+      } else if (rule.rules || rule.cssRules) {
+        // a nested rule like @media { rule { ... } }
+        // so we filter the rules inside individually
+        const nestedRules = CSSSniff._filterCSSRulesByElement(
+          el,
+          rule.rules || rule.cssRules,
+          {}
+        );
+        if (nestedRules) {
+          matchedCSS[i] = {
+            before: "@media " + rule.conditionText + " {",
+            children: nestedRules,
+            after: "}"
+          };
+        }
+      }
+    }
+    return Object.keys(matchedCSS).length ? matchedCSS : undefined;
+  }
+}

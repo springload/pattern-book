@@ -1,6 +1,6 @@
 {
   "name": "pattern-book",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description":
     "Minimal Pattern Library (style guide) React component for displaying HTML and CSS",
   "main": "./build/index.js",
@@ -18,10 +18,12 @@
     "library",
     "style",
     "guide",
-    "react",
     "html",
+    "css",
+    "react",
     "jsx",
-    "css"
+    "sass",
+    "less"
   ],
   "author": "Matthew Holloway",
   "license": "ISC",

@@ -42,16 +42,15 @@ var PatternBook = function (_PureComponent) {
       visible: true,
       height: props.height || DEFAULT_HEIGHT,
       html: [],
-      jsx: [],
+      // jsx: [],
       css: []
     };
 
     _this.updateBook = _this.updateBook.bind(_this);
     _this.updateHTML = _this.updateHTML.bind(_this);
-    _this.updateJSX = _this.updateJSX.bind(_this);
-    _this.updateJSXChildren = _this.updateJSXChildren.bind(_this);
+    // this.updateJSX = this.updateJSX.bind(this);
+    // this.updateJSXChildren = this.updateJSXChildren.bind(this);
     _this.updateCSS = _this.updateCSS.bind(_this);
-    _this.updateCSSChildren = _this.updateCSSChildren.bind(_this);
     return _this;
   }
 
@@ -64,7 +63,6 @@ var PatternBook = function (_PureComponent) {
     key: "updateBook",
     value: function updateBook() {
       this.updateHTML();
-      this.updateJSX();
       this.updateCSS();
       // this.updateJSX();
     }
@@ -124,31 +122,12 @@ var PatternBook = function (_PureComponent) {
   }, {
     key: "updateCSS",
     value: function updateCSS() {
-      var children = [].concat(_toConsumableArray(this.container.childNodes));
-
-      var rawCSS = children.map(this.updateCSSChildren).join("");
-
+      var rules = CSSSniff.getCSSRules([].concat(_toConsumableArray(this.container.childNodes)));
+      var rawCSS = CSSSniff.serialize(rules);
       var css = (0, _cssZeroBeautify2.default)(rawCSS, {
         output: _cssZeroBeautify.OUTPUT_FORMATS.html
       });
-
       this.setState({ css: css });
-    }
-  }, {
-    key: "updateCSSChildren",
-    value: function updateCSSChildren(child) {
-      if (!child.getAttribute) return; // probable text node which can't have CSS
-      var css = "";
-      var style = child.getAttribute("style");
-      if (style) {
-        css += "/* inline style on '" + child.name + "' " + style + " */\n";
-      }
-      css += getCSS(child).join("");
-      if (child.childNodes) {
-        var children = [].concat(_toConsumableArray(child.childNodes));
-        css += children.map(this.updateCSSChildren).join("");
-      }
-      return css;
     }
   }, {
     key: "render",
@@ -215,41 +194,98 @@ var PatternBook = function (_PureComponent) {
 
 exports.default = PatternBook;
 
-
-var getCSS = function getCSS(el) {
-  var sheets = window.document.styleSheets;
-  var matchedRules = [];
-
-  el.matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector || el.oMatchesSelector;
-
-  for (var i in sheets) {
-    var rules = sheets[i].rules || sheets[i].cssRules;
-    matchedRules = matchedRules.concat(testRules(el, rules));
+var CSSSniff = function () {
+  function CSSSniff() {
+    _classCallCheck(this, CSSSniff);
   }
-  return matchedRules;
-};
 
-var testRules = function testRules(el, rules) {
-  var matchedRules = [];
-  for (var r in rules) {
-    var rule = rules[r];
-    if (rule.selectorText) {
-      if (el.matches(rule.selectorText)) {
-        matchedRules.push(rule.cssText);
-      }
-    } else if (rule.rules || rule.cssRules) {
-      // a nested rule like @media { rule { ... } }
-      var nestedRules = testRules(el, rule.rules || rule.cssRules);
-      if (nestedRules.length) {
-        // TODO: distinguish between other nested types?
-        var cssText = "@media ";
-        cssText += rule.conditionText;
-        cssText += " {";
-        cssText += nestedRules.join(" ");
-        cssText += "}";
-        matchedRules.push(cssText);
-      }
+  _createClass(CSSSniff, null, [{
+    key: "serialize",
+    value: function serialize(rules) {
+      return Object.keys(rules).map(function (key) {
+        var rule = rules[key];
+        var css = "";
+        if (rule.selectors) {
+          css += rule.selectors.join(",");
+          css += rule.properties;
+        } else if (rule.before) {
+          css += rule.before;
+          css += CSSSniff.serialize(rule.children);
+          css += rule.after;
+        } else if (rule instanceof Object) {
+          css += CSSSniff.serialize(rule);
+        }
+        return css;
+      }).join("");
     }
-  }
-  return matchedRules;
-};
+  }, {
+    key: "getCSSRules",
+    value: function getCSSRules(children, matchedCSS) {
+      return children.reduce(function (matchedCSS, child, i) {
+        matchedCSS = CSSSniff.getCSSRulesByElement(child, matchedCSS);
+        if (child.childNodes) matchedCSS = CSSSniff.getCSSRules([].concat(_toConsumableArray(child.childNodes)), matchedCSS);
+        return matchedCSS;
+      }, matchedCSS || {});
+    }
+  }, {
+    key: "getCSSRulesByElement",
+    value: function getCSSRulesByElement(el, matchedCSS) {
+      el.matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector || el.oMatchesSelector;
+      if (!el.matches) return matchedCSS; // presumed text node
+
+      var sheets = window.document.styleSheets;
+      for (var i in sheets) {
+        var matchedCSSRule = CSSSniff._filterCSSRulesByElement(el, sheets[i].rules || sheets[i].cssRules, matchedCSS[i] || {});
+        if (matchedCSSRule) {
+          matchedCSS[i] = matchedCSSRule;
+        }
+      }
+      return matchedCSS;
+    }
+  }, {
+    key: "_filterCSSRulesByElement",
+    value: function _filterCSSRulesByElement(el, rules, matchedCSS) {
+      var _loop = function _loop(i) {
+        var rule = rules[i];
+        if (rule.selectorText) {
+          // TODO split selectorText by separator
+          // eg
+          // selector = 'a,b'  -->  ['a','b']
+          // BUT ALSO
+          // selector = 'a[attr=','],b'  -->  'a[attr=\',\']', 'b']
+          // Currently the splitting is naive
+          var selectors = rule.selectorText.split(",");
+          selectors.forEach(function (selector) {
+            if (el.matches(selector)) {
+              matchedCSS[i] = {
+                selectors: matchedCSS[i] && matchedCSS[i].selectors || [],
+                properties: rule.cssText.substring(rule.cssText.indexOf("{"))
+              };
+              if (matchedCSS[i].selectors.indexOf(selector) === -1) {
+                matchedCSS[i].selectors.push(selector);
+              }
+            }
+          });
+        } else if (rule.rules || rule.cssRules) {
+          // a nested rule like @media { rule { ... } }
+          // so we filter the rules inside individually
+          var nestedRules = CSSSniff._filterCSSRulesByElement(el, rule.rules || rule.cssRules, {});
+          if (nestedRules) {
+            matchedCSS[i] = {
+              before: "@media " + rule.conditionText + " {",
+              children: nestedRules,
+              after: "}"
+            };
+          }
+        }
+      };
+
+      for (var i in rules) {
+        _loop(i);
+      }
+      return Object.keys(matchedCSS).length ? matchedCSS : undefined;
+    }
+  }]);
+
+  return CSSSniff;
+}();
