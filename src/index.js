@@ -183,7 +183,7 @@ class CSSSniff {
       el.mozMatchesSelector ||
       el.msMatchesSelector ||
       el.oMatchesSelector;
-    if (!matches) return; // presumed text node
+    if (!matches) return matchedCSS; // presumed text node
     el.matches = matches;
 
     const sheets = window.document.styleSheets;

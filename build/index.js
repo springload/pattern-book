@@ -202,6 +202,7 @@ var CSSSniff = function () {
   _createClass(CSSSniff, null, [{
     key: "serialize",
     value: function serialize(rules) {
+      if (!rules) return "";
       return Object.keys(rules).map(function (key) {
         var rule = rules[key];
         var css = "";
@@ -230,8 +231,9 @@ var CSSSniff = function () {
   }, {
     key: "getCSSRulesByElement",
     value: function getCSSRulesByElement(el, matchedCSS) {
-      el.matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector || el.oMatchesSelector;
-      if (!el.matches) return matchedCSS; // presumed text node
+      var matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector || el.oMatchesSelector;
+      if (!matches) return matchedCSS; // presumed text node
+      el.matches = matches;
 
       var sheets = window.document.styleSheets;
       for (var i in sheets) {
