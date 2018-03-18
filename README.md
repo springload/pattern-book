@@ -43,7 +43,7 @@ Will look like
     </div>    
 </blockquote>
 
-<h2>Q. This is a pattern library so where's the outdated dev webserver with broken hot reloading?</h2>
+<h2>Q. This is a pattern library so where's the dev webserver?</h2>
 
 <p>Great question.
 
@@ -55,13 +55,17 @@ Will look like
 
 <h2>Q. How does pattern-book organise the page of patterns... with headings, accordions, tabs, or what?</h2>
 
-<p>It doesn't organise them, so design it however you want!
+<p>Imagine that your pattern library had 5 components then it probably should be organised quite differently to another library with 1000 components, so this software is unopinionated about organisation. Pattern-Book just renders the component preview so decide for yourself how to organise them (do try <a href="https://github.com/springload/react-accessible-accordion/">[react-accessible-accordion</a> though!).
 
-<p>Imagine if your pattern library had 5 components then it probably should be organised quite differently to another library with 1000 components, so this software is unopinionated about organisation. Pattern-Book just renders the component preview so decide for yourself how to organise them (do try <a href="https://github.com/springload/react-accessible-accordion/">[react-accessible-accordion</a> though!).
+<p>So long story short, it doesn't organise them, so design it however you want!</p>
 
 <h2>Q. How can I make patterns for an existing website?</h2>
 
-<p>One of the advantages of Pattern-Book is that it detects the CSS Rules being applied, so you can put your entire site's CSS files on the page and then write HTML that uses them and Pattern-Book will only display the relevant CSS (no need to manually associate CSS with a particular `&lt;Book&gt;`). This means that it's hopefully a lot less effort to repurpose your existing CSS as a pattern library.
+<p>One of the advantages of Pattern-Book is that it detects the CSS Rules being applied, so you can put your entire site's CSS files on the page and then write HTML that uses them and Pattern-Book will only display the relevant CSS (no need to manually associate CSS with a particular `&lt;Book&gt;`). This means that it's hopefully a lot less effort to repurpose your existing CSS as a pattern library.</p>
+
+<h2>Themes</h2>
+
+<p>Sure, just use `pattern-book/theme/solarize.css`.</p> 
 
 <h3>Features</h3>
 

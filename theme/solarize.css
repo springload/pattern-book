@@ -1,0 +1,50 @@
+code {
+  background: #002b36;
+  padding: 0.8rem;
+  display: block;
+  color: #93a1a1;
+  font-weight: bold;
+}
+
+/* HTML */
+.b-tag {
+  color: #cb4b16;
+}
+
+.b-attr-key {
+  color: #dc322f;
+}
+
+.b-attr-equals {
+  color: #268bd2;
+}
+
+.b-attr-value {
+  color: #fdf6e3;
+}
+
+.b-tag {
+  color: #cb4b16;
+}
+
+.b-attr-key {
+  color: #dc322f;
+}
+
+.b-attr-equals {
+  color: #268bd2;
+}
+
+.b-attr-value {
+  color: #fdf6e3;
+}
+
+/* CSS */
+
+.b-selector {
+  color: #cb4b16;
+}
+
+.b-prop {
+  color: #268bd2;
+}
