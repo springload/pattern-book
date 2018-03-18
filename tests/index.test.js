@@ -3,8 +3,13 @@ import Book from "../src/index";
 import renderer from "react-test-renderer";
 
 it("renders correctly", async () => {
+  // FIXME. CSS isn't working.
   global.document = {
-    styleSheets: [{ childNodes: ["b", "c"] }]
+    styleSheets: [
+      {
+        rules: ["b", "c"]
+      }
+    ]
   };
 
   const book = (

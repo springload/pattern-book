@@ -147,6 +147,7 @@ export default class PatternBook extends PureComponent {
 
 class CSSSniff {
   static serialize(rules) {
+    if (!rules) return "";
     return Object.keys(rules)
       .map(key => {
         const rule = rules[key];
@@ -176,13 +177,14 @@ class CSSSniff {
   }
 
   static getCSSRulesByElement(el, matchedCSS) {
-    el.matches =
+    const matches =
       el.matches ||
       el.webkitMatchesSelector ||
       el.mozMatchesSelector ||
       el.msMatchesSelector ||
       el.oMatchesSelector;
-    if (!el.matches) return matchedCSS; // presumed text node
+    if (!matches) return; // presumed text node
+    el.matches = matches;
 
     const sheets = window.document.styleSheets;
     for (let i in sheets) {
