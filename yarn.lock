@@ -1007,15 +1007,15 @@ cryptiles@3.x.x:
   dependencies:
     boom "5.x.x"
 
-css-zero-beautify@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/css-zero-beautify/-/css-zero-beautify-2.0.1.tgz#4de667ff01af4035c9e25d7fd93c97d23b9400a3"
+css-zero-beautify@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/css-zero-beautify/-/css-zero-beautify-2.0.5.tgz#8faf1a1c68cadf6518b8e8d03ef03257ceaae199"
   dependencies:
-    css-zero-lexer "^0.0.4"
+    css-zero-lexer "^1.0.2"
 
-css-zero-lexer@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/css-zero-lexer/-/css-zero-lexer-0.0.4.tgz#92ef55b6ae0bfd9924d0d4b03c084b9e8376d91e"
+css-zero-lexer@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/css-zero-lexer/-/css-zero-lexer-1.0.2.tgz#f1d86ad287133290e4b08ca5bcfeb6a91827b42a"
 
 cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   version "0.3.2"
@@ -2531,7 +2531,7 @@ rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-test-renderer@^16.2.0:
+react-test-renderer@>15:
   version "16.2.0"
   resolved "https://registry.yarnpkg.com/react-test-renderer/-/react-test-renderer-16.2.0.tgz#bddf259a6b8fcd8555f012afc8eacc238872a211"
   dependencies:
@@ -3180,15 +3180,15 @@ xml-name-validator@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/xml-name-validator/-/xml-name-validator-2.0.1.tgz#4d8b8f1eccd3419aa362061becef515e1e559635"
 
-xml-zero-beautify@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/xml-zero-beautify/-/xml-zero-beautify-2.0.4.tgz#a7502e0a98c63749a022ee28875e22f5988ecdc0"
+xml-zero-beautify@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/xml-zero-beautify/-/xml-zero-beautify-2.0.5.tgz#fee4f42711c846e87d28ae4011651130ff0f3e7a"
   dependencies:
-    xml-zero-lexer "^2.0.4"
+    xml-zero-lexer "^2.0.5"
 
-xml-zero-lexer@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/xml-zero-lexer/-/xml-zero-lexer-2.0.4.tgz#f13a8ecb86eaea5dd795ad018bd1f453dfab3825"
+xml-zero-lexer@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/xml-zero-lexer/-/xml-zero-lexer-2.0.5.tgz#d6f51b69fef0860e4920eff64d18cccaefa9ab3d"
 
 xtend@~4.0.1:
   version "4.0.1"

@@ -3,7 +3,9 @@ import XMLBeautify, {
   OUTPUT_FORMATS as XML_OUTPUT_FORMATS
 } from "xml-zero-beautify";
 import CSSBeautify, {
-  OUTPUT_FORMATS as CSS_OUTPUT_FORMATS
+  OUTPUT_FORMATS as CSS_OUTPUT_FORMATS,
+  CSSZeroLexer,
+  CSSZeroLexerNodeTypes
 } from "css-zero-beautify";
 
 const DEFAULT_HEIGHT = 100;
@@ -95,7 +97,11 @@ export default class PatternBook extends PureComponent {
   }
 
   updateCSS() {
-    const rules = CSSSniff.getCSSRules([...this.container.childNodes]);
+    const rules = CSSSniff.getCSSRules(
+      [...this.container.childNodes],
+      undefined,
+      this.props.blacklist
+    );
     const rawCSS = CSSSniff.serialize(rules);
     const css = CSSBeautify(rawCSS, {
       output: CSS_OUTPUT_FORMATS.html
@@ -167,16 +173,20 @@ class CSSSniff {
       .join("");
   }
 
-  static getCSSRules(children, matchedCSS) {
+  static getCSSRules(children, matchedCSS, blacklist) {
     return children.reduce((matchedCSS, child, i) => {
-      matchedCSS = CSSSniff.getCSSRulesByElement(child, matchedCSS);
+      matchedCSS = CSSSniff.getCSSRulesByElement(child, matchedCSS, blacklist);
       if (child.childNodes)
-        matchedCSS = CSSSniff.getCSSRules([...child.childNodes], matchedCSS);
+        matchedCSS = CSSSniff.getCSSRules(
+          [...child.childNodes],
+          matchedCSS,
+          blacklist
+        );
       return matchedCSS;
     }, matchedCSS || {});
   }
 
-  static getCSSRulesByElement(el, matchedCSS) {
+  static getCSSRulesByElement(el, matchedCSS, blacklist) {
     const matches =
       el.matches ||
       el.webkitMatchesSelector ||
@@ -187,58 +197,123 @@ class CSSSniff {
     el.matches = matches;
 
     const sheets = window.document.styleSheets;
+
     for (let i in sheets) {
-      const matchedCSSRule = CSSSniff._filterCSSRulesByElement(
-        el,
-        sheets[i].rules || sheets[i].cssRules,
-        matchedCSS[i] || {}
-      );
-      if (matchedCSSRule) {
-        matchedCSS[i] = matchedCSSRule;
+      const sheet = sheets[i];
+      if (!CSSSniff.isSheetBlacklisted(sheet, blacklist)) {
+        const matchedCSSRule = CSSSniff._filterCSSRulesByElement(
+          el,
+          sheet.rules || sheet.cssRules,
+          matchedCSS[i] || {},
+          blacklist
+        );
+        if (matchedCSSRule) {
+          matchedCSS[i] = matchedCSSRule;
+        }
       }
     }
     return matchedCSS;
   }
 
-  static _filterCSSRulesByElement(el, rules, matchedCSS) {
+  static _filterCSSRulesByElement(el, rules, matchedCSS, blacklist) {
     for (let i in rules) {
       const rule = rules[i];
       if (rule.selectorText) {
-        // TODO split selectorText by separator
-        // eg
-        // selector = 'a,b'  -->  ['a','b']
-        // BUT ALSO
-        // selector = 'a[attr=','],b'  -->  'a[attr=\',\']', 'b']
-        // Currently the splitting is naive
-        const selectors = rule.selectorText.split(",");
-        selectors.forEach(selector => {
-          if (el.matches(selector)) {
-            matchedCSS[i] = {
-              selectors: (matchedCSS[i] && matchedCSS[i].selectors) || [],
-              properties: rule.cssText.substring(rule.cssText.indexOf("{"))
-            };
-            if (matchedCSS[i].selectors.indexOf(selector) === -1) {
-              matchedCSS[i].selectors.push(selector);
+        if (!CSSSniff.isRuleBlacklisted(rule.selectorText, blacklist)) {
+          // TODO split selectorText by separator
+          // eg
+          // selector = 'a,b'  -->  ['a','b']
+          // BUT ALSO
+          // selector = 'a[attr=','],b'  -->  'a[attr=\',\']', 'b']
+          // Currently the splitting is naive
+          const selectors = rule.selectorText.split(",");
+          selectors.forEach(selector => {
+            if (el.matches(selector)) {
+              matchedCSS[i] = {
+                selectors: (matchedCSS[i] && matchedCSS[i].selectors) || [],
+                properties: rule.cssText.substring(rule.cssText.indexOf("{"))
+              };
+              if (matchedCSS[i].selectors.indexOf(selector) === -1) {
+                matchedCSS[i].selectors.push(selector);
+              }
             }
+          });
+        }
+      } else if ((rule.rules || rule.cssRules) && rule.conditionText) {
+        if (!CSSSniff.isMediaBlacklisted(rule.conditionText, blacklist)) {
+          // a nested rule like @media { rule { ... } }
+          // so we filter the rules inside individually
+          const nestedRules = CSSSniff._filterCSSRulesByElement(
+            el,
+            rule.rules || rule.cssRules,
+            {},
+            blacklist
+          );
+          if (nestedRules) {
+            matchedCSS[i] = {
+              before: "@media " + rule.conditionText + " {",
+              children: nestedRules,
+              after: "}"
+            };
           }
-        });
-      } else if (rule.rules || rule.cssRules) {
-        // a nested rule like @media { rule { ... } }
-        // so we filter the rules inside individually
-        const nestedRules = CSSSniff._filterCSSRulesByElement(
-          el,
-          rule.rules || rule.cssRules,
-          {}
-        );
-        if (nestedRules) {
-          matchedCSS[i] = {
-            before: "@media " + rule.conditionText + " {",
-            children: nestedRules,
-            after: "}"
-          };
         }
       }
     }
     return Object.keys(matchedCSS).length ? matchedCSS : undefined;
+  }
+
+  static isSheetBlacklisted(sheet, blacklist) {
+    if (!blacklist || !sheet) return false;
+
+    // checking sheet.ownerNode because maybe window.document.styleSheets
+    // can have non-ownerNode stylesheets (JS-created or something?)
+    if (!sheet.ownerNode) return false;
+
+    const checkStylesheet = (sheet, stylesheetMatch) => {
+      window.cS = sheet.ownerNode;
+      switch (sheet.ownerNode.nodeName.toLowerCase()) {
+        case "style":
+        case "link":
+          // matching on JSON.stringify(node.attrs)
+          const nodeAttrs = sheet.ownerNode.attributes;
+          const attrs = {};
+          for (let i = 0; i < nodeAttrs.length; i++)
+            attrs[nodeAttrs[i].name] = nodeAttrs[i].value;
+          const attributesJSON = JSON.stringify(attrs);
+          return attributesJSON.indexOf(stylesheetMatch) !== -1;
+      }
+    };
+
+    if (blacklist.stylesheets) {
+      return blacklist.stylesheets.some(stylesheet =>
+        checkStylesheet(sheet, stylesheet)
+      );
+    } else if (blacklist.stylesheet) {
+      return checkStylesheet(sheet, blacklist.stylesheet);
+    }
+  }
+
+  static isMediaBlacklisted(mediaString, blacklist) {
+    if (!blacklist || !mediaString) return false;
+
+    // If the blacklist doesn't filter on this type
+    if (blacklist.rules) {
+      return blacklist.rules.some(rule => mediaString.indexOf(rule) !== -1);
+    } else if (blacklist.rule) {
+      return mediaString.indexOf(blacklist.rule) !== -1;
+    }
+    return false;
+  }
+
+  static isRuleBlacklisted(ruleString, blacklist) {
+    if (!blacklist || !ruleString) return false;
+
+    // If the blacklist doesn't filter on this type
+    if (blacklist.rules) {
+      return blacklist.rules.some(rule => ruleString.indexOf(rule) !== -1);
+    } else if (blacklist.rule) {
+      return ruleString.indexOf(blacklist.rule) !== -1;
+    }
+    return false;
   }
 }

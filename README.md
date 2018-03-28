@@ -33,15 +33,7 @@ class PatternLibrary extends Component {
 
 Will look like
 
-<blockquote>
-    <h5>Heading Patterns</h5>
-    <hr>
-    <div>
-      <h6>My Heading 6</h6>
-      <details><summary>HTML</summary>&lt;h6&gt;My Heading 6&lt;/h6&gt;</details>
-      <details><summary>CSS</summary>h6 { color: red; }</details>
-    </div>    
-</blockquote>
+<blockquote><h5>Heading Patterns</h5><hr><div><h6>My Heading 6</h6><details><summary>HTML</summary>&lt;h6&gt;My Heading 6&lt;/h6&gt;</details><details><summary>CSS</summary>h6 { color: red; }</details></div></blockquote>
 
 <h2>Q. This is a pattern library so where's the dev webserver?</h2>
 
@@ -65,7 +57,7 @@ Will look like
 
 <h2>Themes</h2>
 
-<p>Sure, just use `pattern-book/theme/solarize.css`.</p> 
+<p>Sure, just use `pattern-book/theme/solarize.css`.</p>
 
 <h3>Features</h3>
 
@@ -73,17 +65,18 @@ Will look like
  <li> [x] Minimal
  <li> [x] CSS Autodetection, so there's no need to manually associate CSS with a pattern
  <li> [x] HTML beautifier
+ <li> [x] CSS beautifier
+ <li> [x] CSS rule blacklist. Pass in 'blacklist' prop with value of 'stylesheet' to string match against attributes of `&lt;link&gt;` or `&lt;style&gt;`, 'stylesheets' to pass in an array of those, or 'rule' to match against selectors, or rules for an array of those.
+ <li> [x] Render prop overrides for HTML and CSS
 </ul>
 
 <h3>ToDo</h3>
 
 <ul>
- <li> [ ] CSS Beautifier
  <li> [ ] ZIP download of particular components (including assets, eg backgrounds images and fonts).
- <li> [ ] CSS Rule blacklist (and whitelist?) per-book
+ <li> [ ] CSS Rule whitelist (probably only useful to opt-in specific stylesheets while ignoring others)
  <li> [ ] ...and show prop types, somehow? (`prop-types` or Flow/TS?). Sadly I'm not sure how we could support FlowType/TypeScript types because those are removed at compile-time.
  <li> [ ] Detect basic JSX React Components... this is almost working
- <li> [ ] Render prop overrides for HTML and CSS (and the whole render()?)
  <li> [ ] Make it support interactive components (eg accumulating CSS across these multiple states).
  <li> [ ] Make the `&lt;Book&gt;` not render until it scrolls into view (pattern libraries are notorious for having hundreds of compnents on a long page, so this is hopefully an easy optimisation).
  <li> [ ] Parse SourceMaps to derive Sass (etc) if possible.

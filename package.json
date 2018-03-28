@@ -1,6 +1,6 @@
 {
   "name": "pattern-book",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description":
     "Minimal Pattern Library (style guide) React component for displaying HTML and CSS",
   "main": "./build/index.js",
@@ -60,7 +60,7 @@
     "plugins": [["transform-react-jsx"], ["transform-object-rest-spread"]]
   },
   "dependencies": {
-    "css-zero-beautify": "^2.0.2",
-    "xml-zero-beautify": "^2.0.4"
+    "css-zero-beautify": "^2.0.5",
+    "xml-zero-beautify": "^2.0.5"
   }
 }
