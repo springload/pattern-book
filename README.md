@@ -3,6 +3,8 @@
   <i>A pattern library designed to be easier to maintain</i>
 </p>
 
+A pattern library, also known as a style guide, is a way of showing HTML and CSS for components (React components, or plain HTML).
+
 ---
 
 ## Q. How can I make patterns for an existing website?
