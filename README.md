@@ -1,11 +1,11 @@
 <p align="center">
   <img width="245" height="378" src="/logo.png" alt="Pattern Book"><br>
-  <i>It's not a pattern library, it's a pattern book, so make your own library!</i>
+  <i>A pattern library designed to be easier to maintain</i>
 </p>
 
 ---
 
-Pattern-Book is a simple and tiny component that auto-detects your HTML and CSS and displays it, and that's all.
+Pattern-Book is a simple and tiny component that auto-detects your CSS and displays it, and that's all.
 
 Unlike most Pattern Libaries, also known as Style Guides, there's no need to define components in the way that the framework understands. Instead Pattern-Book works with your existing components and it auto-detects the code being used.
 

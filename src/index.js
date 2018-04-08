@@ -97,11 +97,10 @@ export default class PatternBook extends PureComponent {
   }
 
   updateCSS() {
-    const rules = CSSSniff.getCSSRules(
-      [...this.container.childNodes],
-      undefined,
-      this.props.blacklist
-    );
+    const rules = CSSSniff.getCSSRules([...this.container.childNodes], {
+      whitelist: this.props.whitelist,
+      blacklist: this.props.blacklist
+    });
     const rawCSS = CSSSniff.serialize(rules);
     const css = CSSBeautify(rawCSS, {
       output: CSS_OUTPUT_FORMATS.html
@@ -152,41 +151,20 @@ export default class PatternBook extends PureComponent {
 }
 
 class CSSSniff {
-  static serialize(rules) {
-    if (!rules) return "";
-    return Object.keys(rules)
-      .map(key => {
-        const rule = rules[key];
-        let css = "";
-        if (rule.selectors) {
-          css += rule.selectors.join(",");
-          css += rule.properties;
-        } else if (rule.before) {
-          css += rule.before;
-          css += CSSSniff.serialize(rule.children);
-          css += rule.after;
-        } else if (rule instanceof Object) {
-          css += CSSSniff.serialize(rule);
-        }
-        return css;
-      })
-      .join("");
-  }
-
-  static getCSSRules(children, matchedCSS, blacklist) {
+  static getCSSRules(children, options, matchedCSS) {
     return children.reduce((matchedCSS, child, i) => {
-      matchedCSS = CSSSniff.getCSSRulesByElement(child, matchedCSS, blacklist);
+      matchedCSS = CSSSniff.getCSSRulesByElement(child, options, matchedCSS);
       if (child.childNodes)
         matchedCSS = CSSSniff.getCSSRules(
           [...child.childNodes],
-          matchedCSS,
-          blacklist
+          options,
+          matchedCSS
         );
       return matchedCSS;
     }, matchedCSS || {});
   }
 
-  static getCSSRulesByElement(el, matchedCSS, blacklist) {
+  static getCSSRulesByElement(el, options, matchedCSS) {
     const matches =
       el.matches ||
       el.webkitMatchesSelector ||
@@ -200,12 +178,12 @@ class CSSSniff {
 
     for (let i in sheets) {
       const sheet = sheets[i];
-      if (!CSSSniff.isSheetBlacklisted(sheet, blacklist)) {
+      if (CSSSniff.sheetIsAllowed(sheet, options)) {
         const matchedCSSRule = CSSSniff._filterCSSRulesByElement(
           el,
           sheet.rules || sheet.cssRules,
-          matchedCSS[i] || {},
-          blacklist
+          options,
+          matchedCSS[i] || {}
         );
         if (matchedCSSRule) {
           matchedCSS[i] = matchedCSSRule;
@@ -215,11 +193,11 @@ class CSSSniff {
     return matchedCSS;
   }
 
-  static _filterCSSRulesByElement(el, rules, matchedCSS, blacklist) {
+  static _filterCSSRulesByElement(el, rules, options, matchedCSS) {
     for (let i in rules) {
       const rule = rules[i];
       if (rule.selectorText) {
-        if (!CSSSniff.isRuleBlacklisted(rule.selectorText, blacklist)) {
+        if (CSSSniff.ruleIsAllowed(rule.selectorText, options)) {
           // TODO split selectorText by separator
           // eg
           // selector = 'a,b'  -->  ['a','b']
@@ -240,14 +218,14 @@ class CSSSniff {
           });
         }
       } else if ((rule.rules || rule.cssRules) && rule.conditionText) {
-        if (!CSSSniff.isMediaBlacklisted(rule.conditionText, blacklist)) {
+        if (CSSSniff.mediaIsAllowed(rule.conditionText, options)) {
           // a nested rule like @media { rule { ... } }
           // so we filter the rules inside individually
           const nestedRules = CSSSniff._filterCSSRulesByElement(
             el,
             rule.rules || rule.cssRules,
-            {},
-            blacklist
+            options,
+            {}
           );
           if (nestedRules) {
             matchedCSS[i] = {
@@ -262,15 +240,16 @@ class CSSSniff {
     return Object.keys(matchedCSS).length ? matchedCSS : undefined;
   }
 
-  static isSheetBlacklisted(sheet, blacklist) {
-    if (!blacklist || !sheet) return false;
+  static sheetIsAllowed(sheet, options) {
+    // Returns boolean of whether the sheet is allowed
+    // due to whitelist/blacklist
+    if (!options || !sheet) return false;
 
     // checking sheet.ownerNode because maybe window.document.styleSheets
     // can have non-ownerNode stylesheets (JS-created or something?)
     if (!sheet.ownerNode) return false;
 
-    const checkStylesheet = (sheet, stylesheetMatch) => {
-      window.cS = sheet.ownerNode;
+    const checkStylesheet = (sheet, sheetMatch) => {
       switch (sheet.ownerNode.nodeName.toLowerCase()) {
         case "style":
         case "link":
@@ -280,40 +259,111 @@ class CSSSniff {
           for (let i = 0; i < nodeAttrs.length; i++)
             attrs[nodeAttrs[i].name] = nodeAttrs[i].value;
           const attributesJSON = JSON.stringify(attrs);
-          return attributesJSON.indexOf(stylesheetMatch) !== -1;
+          return attributesJSON.indexOf(sheetMatch) !== -1;
       }
     };
 
-    if (blacklist.stylesheets) {
-      return blacklist.stylesheets.some(stylesheet =>
-        checkStylesheet(sheet, stylesheet)
+    let whitelisted, blacklisted;
+
+    const whitelistStylesheets =
+      options.whitelist && options.whitelist.stylesheet;
+    if (whitelistStylesheets) {
+      const sheetMatches = Array.isArray(whitelistStylesheets)
+        ? whitelistStylesheets
+        : [whitelistStylesheets];
+      whitelisted = sheetMatches.some(sheetMatch =>
+        checkStylesheet(sheet, sheetMatches)
       );
-    } else if (blacklist.stylesheet) {
-      return checkStylesheet(sheet, blacklist.stylesheet);
     }
+
+    const blacklistStylesheets =
+      options.blacklist && options.blacklist.stylesheet;
+    if (blacklistStylesheets) {
+      const sheetMatches = Array.isArray(blacklistStylesheets)
+        ? blacklistStylesheets
+        : [blacklistStylesheets];
+      blacklisted = sheetMatches.some(sheetMatch =>
+        checkStylesheet(sheet, sheetMatch)
+      );
+    }
+
+    return whitelisted !== false && blacklisted !== true;
   }
 
-  static isMediaBlacklisted(mediaString, blacklist) {
-    if (!blacklist || !mediaString) return false;
+  static mediaIsAllowed(mediaString, options) {
+    if (!options || !mediaString) return false;
 
-    // If the blacklist doesn't filter on this type
-    if (blacklist.rules) {
-      return blacklist.rules.some(rule => mediaString.indexOf(rule) !== -1);
-    } else if (blacklist.rule) {
-      return mediaString.indexOf(blacklist.rule) !== -1;
+    let whitelisted, blacklisted;
+
+    const whitelistMedia = options.whitelist && options.whitelist.media;
+    if (whitelistMedia) {
+      const mediaMatches = Array.isArray(whitelistMedia)
+        ? whitelistMedia
+        : [whitelistMedia];
+      whitelisted = mediaMatches.some(
+        mediaMatch => mediaString.indexOf(mediaMatch) !== -1
+      );
     }
-    return false;
+
+    const blacklistMedia = options.blacklist && options.blacklist.media;
+    if (blacklistMedia) {
+      const mediaMatches = Array.isArray(blacklistMedia)
+        ? blacklistMedia
+        : [blacklistMedia];
+      blacklisted = mediaMatches.some(
+        mediaMatch => mediaString.indexOf(mediaMatch) !== -1
+      );
+    }
+
+    return whitelisted !== false && blacklisted !== true;
   }
 
-  static isRuleBlacklisted(ruleString, blacklist) {
-    if (!blacklist || !ruleString) return false;
+  static ruleIsAllowed(ruleString, options) {
+    if (!options || !ruleString) return false;
 
-    // If the blacklist doesn't filter on this type
-    if (blacklist.rules) {
-      return blacklist.rules.some(rule => ruleString.indexOf(rule) !== -1);
-    } else if (blacklist.rule) {
-      return ruleString.indexOf(blacklist.rule) !== -1;
+    let whitelisted, blacklisted;
+
+    const whitelistRules = options.whitelist && options.whitelist.rule;
+    if (whitelistRules) {
+      const ruleMatches = Array.isArray(whitelistRules)
+        ? whitelistRules
+        : [whitelistRules];
+      whitelisted = ruleMatches.some(
+        ruleMatch => ruleString.indexOf(ruleMatch) !== -1
+      );
     }
-    return false;
+
+    const blacklistRules = options.blacklist && options.blacklist.rule;
+    if (blacklistRules) {
+      const ruleMatches = Array.isArray(blacklistRules)
+        ? blacklistRules
+        : [blacklistRules];
+      blacklisted = ruleMatches.some(
+        ruleMatch => ruleString.indexOf(ruleMatch) !== -1
+      );
+    }
+
+    return whitelisted !== false && blacklisted !== true;
+  }
+
+  static serialize(rules) {
+    if (!rules) return "";
+    return Object.keys(rules)
+      .map(key => {
+        const rule = rules[key];
+        let css = "";
+        if (rule.selectors) {
+          css += rule.selectors.join(",");
+          css += rule.properties;
+        } else if (rule.before) {
+          css += rule.before;
+          css += CSSSniff.serialize(rule.children);
+          css += rule.after;
+        } else if (rule instanceof Object) {
+          css += CSSSniff.serialize(rule);
+        }
+        return css;
+      })
+      .join("");
   }
 }

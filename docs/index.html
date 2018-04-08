@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Pattern-Book - Minimal Pattern Library / Style Guide</title>
+    <title>Pattern-Book - A Pattern Library (Style Guide) designed to be easier to maintain</title>
     <style>
         body {
             padding: 0px;
@@ -351,11 +351,40 @@
             transform: rotate(180deg)
         }
 
+        .slogan {
+            width: 100%;
+            text-align: center;
+            background: red;
+            color: yellow;
+            outline: 2px solid red;
+            border: 2px solid yellow;
+            padding: 1em 2em;
+
+            font-size: large;
+            font-weight: bold;
+            font-style: italic;
+        }
+
         .white-page {
             width: 100%;
             position: absolute;
             top: 100vh;
             background: #ccc;
+        }
+
+        .white-page__inner {
+            max-width: 550px;
+            padding: 3rem 1em;
+            margin: 0 auto;
+            font-family: sans-serif;
+            line-height: 1.8;
+        }
+
+
+        h2 {
+            font-weight: normal;
+            margin-top: 2em;
+            line-height: 1.2;
         }
 
         .faq {
@@ -364,6 +393,16 @@
             min-height: 100vh;
             font-family: sans-serif;
             hyphens: none;
+        }
+
+        abbr {
+            border-bottom: none;
+            outline: none;
+            text-decoration: none;
+        }
+
+        .checks {
+            list-style: none;
         }
     </style>
 </head>
@@ -400,70 +439,122 @@
 
 <div class="red-bands"> </div>
 
+
 <div class="scroll-down-hint"> ^ </div>
 
+
+
 <div class="white-page">
+    <div class="white-page__inner">
+        <p class="slogan">
+            A pattern library designed to be easier to maintain
+        </p>
+
+        <h2>
+            <abbr title="question">Q.</abbr> How can I make patterns for an existing website?</h2>
+
+        <p>One of the advantages of Pattern-Book is that it autodetects the CSS Rules being applied to your HTML, so you can
+            put your production site's CSS files on the page and then write HTML to use them and Pattern-Book will do the
+            rest. It will only display the relevant CSS (no need to manually associate CSS with a particular component).
+            This means that it's hopefully a lot less effort to repurpose your existing CSS as a pattern library.</p>
+
+        <p>Pattern-Book supports whitelists and blacklists of CSS to help show the relevant styles.</p>
+
+        <h2>
+            <abbr title="question">Q.</abbr> This is a pattern library so where's the outdated dev webserver with broken hot reloading?</h2>
+
+        <p>Great question.</p>
+
+        <p>
+            <tt>pattern-book</tt> doesn't include a dev server because other projects do it better.</p>
+
+        <p>So just use
+            <a href="https://github.com/facebookincubator/create-react-app">Create-React-App</a> or, add
+            <tt>&lt;Book&gt;`</tt> tags to a new page in your app, or use whatever boilerplate you like.
+        </p>
+
+        <h2>
+            <abbr title="question">Q.</abbr> How does
+            <tt>pattern-book</tt> arrange the page of patterns... with headings, accordions, tabs, or what?</h2>
+
+        <p>Imagine if your pattern library had 5 components then it probably should be designed quite differently to another
+            library with 1000 components, so this software is intentionally unopinionated about organisation.
+            <tt>pattern-book</tt> just renders the component preview itself so decide for yourself how to organise them (do try
+            <a href="https://github.com/springload/react-accessible-accordion/">react-accessible-accordion</a> though!).</p>
+        <p>It doesn't organise them, so design it however you want!</p>
+
+        <h3>Features</h3>
+
+        <ul class="checks">
+            <li>
+                <input type="checkbox" checked readonly> Minimal</li>
+            <li>
+                <input type="checkbox" checked readonly> CSS Autodetection, so there's no need to manually associate CSS with a pattern</li>
+            <li>
+                <input type="checkbox" checked readonly> HTML beautifier</li>
+            <li>
+                <input type="checkbox" checked readonly> CSS Beautifier</li>
+            <li>
+                <input type="checkbox" checked readonly> CSS Rule blacklist and whitelist per-book (filter by stylesheet filename, media, or rule)</li>
+            <li>
+                <input type="checkbox" checked readonly> Render props to support templating</li>
+        </ul>
+
+        <h3>Who's using it? / Demo</h3>
+
+        <ul>
+            <li>
+                <a href="https://springload.github.io/lic-pattern-library/">LIC Pattern Library</a>
+            </li>
+        </ul>
+        <p>You?
+            <a href="https://twitter.com/hollowaynz">Tweet me</a> to be added</p>
+
+        <h3>Usage</h3>
+
+        <p>Use
+            <a href="https://www.npmjs.com/package/pattern-book">
+                <tt>pattern-book</tt>
+            </a> from NPM.</p>
+
+        <p>See
+            <a href="https://github.com/springload/pattern-book/readme.md">readme.md for usage</a>.</p>
+
+        <h3>ToDo</h3>
+
+        <ul class="checks">
+
+            <li>
+                <input type="checkbox" readonly> ZIP download of particular components (including assets, eg backgrounds images and fonts).</li>
+
+            <li>
+                <input type="checkbox" readonly> ...and show prop types, somehow? (`prop-types` or Flow/TS?). Sadly I'm not sure how we could support FlowType/TypeScript
+                types because those are removed at compile-time.</li>
+            <li>
+                <input type="checkbox" readonly> Detect basic JSX React Components... this is almost working</li>
+
+            <li>
+                <input type="checkbox" readonly> support interactive components (eg accumulating CSS across these multiple states).</li>
+            <li>
+                <input type="checkbox" readonly> Make the `&lt;Book&gt;` not render until it scrolls into view (pattern libraries are notorious for having
+                hundreds of compnents on a long page, so this is hopefully an easy optimisation).</li>
+            <li>
+                <input type="checkbox" readonly> Parse SourceMaps to derive Sass (etc) if possible.</li>
+        </ul>
 
 
-    <h2>Q. This is a pattern library so where's the outdated dev webserver with broken hot reloading?</h2>
 
-    <p>Great question.</p>
-
-    <p>`pattern-book` doesn't include a dev server because other projects do it better.</p>
-
-    <p>So instead just use
-        <a href="https://github.com/facebookincubator/create-react-app">Create-React-App</a> or, add `&lt;Book&gt;` tags to a new route in your app, or use whatever boilerplate you like.</p>
-
-    <h2>Q. How does pattern-book organise the page of patterns... with headings, accordions, tabs, or what?</h2>
-
-    <p>It doesn't organise them, so design it however you want!</p>
-
-    <p>Imagine if your pattern library had 5 components then it probably should be organised quite differently to another library
-        with 1000 components, so this software is unopinionated about organisation. Pattern-Book just renders the component
-        preview so decide for yourself how to organise them (do try
-        <a href="https://github.com/springload/react-accessible-accordion/">[react-accessible-accordion</a> though!).</p>
-
-    <h2>Q. How can I make patterns for an existing website?</h2>
-
-    <p>One of the advantages of Pattern-Book is that it detects the CSS Rules being applied, so you can put your entire site's
-        CSS files on the page and then write HTML that uses them and Pattern-Book will only display the relevant CSS (no
-        need to manually associate CSS with a particular `&lt;Book&gt;`). This means that it's hopefully a lot less effort
-        to repurpose your existing CSS as a pattern library.</p>
-
-    <h3>Features</h3>
-
-    <ul>
-        <li> [x] Minimal</li>
-        <li> [x] CSS Autodetection, so there's no need to manually associate CSS with a pattern</li>
-        <li> [x] HTML beautifier</li>
-    </ul>
-
-    <h3>ToDo</h3>
-
-    <ul>
-        <li> [ ] CSS Beautifier</li>
-        <li> [ ] ZIP download of particular components (including assets, eg backgrounds images and fonts).</li>
-        <li> [ ] CSS Rule blacklist (and whitelist?) per-book</li>
-        <li> [ ] ...and show prop types, somehow? (`prop-types` or Flow/TS?). Sadly I'm not sure how we could support FlowType/TypeScript
-            types because those are removed at compile-time.</li>
-        <li> [ ] Detect basic JSX React Components... this is almost working</li>
-        <li> [ ] Render prop overrides for HTML and CSS (and the whole render()?)</li>
-        <li> [ ] Make it support interactive components (eg accumulating CSS across these multiple states).</li>
-        <li> [ ] Make the `&lt;Book&gt;` not render until it scrolls into view (pattern libraries are notorious for having hundreds
-            of compnents on a long page, so this is hopefully an easy optimisation).</li>
-        <li> [ ] Parse SourceMaps to derive Sass (etc) if possible.</li>
-    </ul>
-
+        <h2>Credits</h2>
+        <p>The background book tile graphic
+            <a href="http://www.freepik.com">designed by Freepik</a>
+        </p>
+        <p>The software by Matt Holloway (
+            <a href="https://twitter.com/hollowaynz">@hollowaynz</a>) thanks to
+            <a href="https://springload.co.nz/">Springload.co.nz</a>.</p>
+    </div>
 </div>
 
 
-<div>
-    <h1>Credits</h1>
-    <p>The background book tile graphic
-        <a href="http://www.freepik.com">designed by Freepik</a>
-    </p>
-    <p>The software, animated book, by Matt Holloway.</p>
-</div>
 
 <script>
     (function () {
