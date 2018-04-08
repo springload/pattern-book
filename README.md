@@ -7,7 +7,7 @@
 
 ## Q. How can I make patterns for an existing website?
 
-One of the advantages of Pattern-Book is that it detects the CSS Rules being applied, so you can put your entire site's CSS files on the page and then write HTML that uses them and Pattern-Book will only display the relevant CSS (no need to manually associate CSS with a particular `&lt;Book&gt;`). This means that it's hopefully a lot less effort to repurpose your existing CSS as a pattern library.
+One of the advantages of Pattern-Book is that it detects the CSS Rules being applied, so you can put your entire site's CSS files on the page and then write HTML that uses them and Pattern-Book will only display the relevant CSS (no need to manually associate CSS with a particular `<Book>`). This means that it's hopefully a lot less effort to repurpose your existing CSS as a pattern library.
 
 Unlike most Pattern Libaries, also known as Style Guides, there's no need to define components in the way that the framework understands. Instead Pattern-Book works with your existing components and it auto-detects the code being used.
 
@@ -43,7 +43,7 @@ Great question.
 
 `pattern-book` doesn't include a dev server because other projects do it better.
 
-So instead just use <a href="https://github.com/facebookincubator/create-react-app">Create-React-App</a> or, add `&lt;Book&gt;` tags to a new route in your existing app, or use whatever boilerplate you like.
+So instead just use <a href="https://github.com/facebookincubator/create-react-app">Create-React-App</a> or, add `<Book>` tags to a new route in your existing app, or use whatever boilerplate you like.
 
 Pattern-Book is very specifically targetting just the render and code preview of your components.
 
@@ -61,7 +61,8 @@ Imagine that your pattern library had 5 components then it probably should be or
 
 <ul>
  <li> [x] Minimal
- <li> [x] CSS Autodetection, so there's no need to manually associate CSS with a pattern
+ <li> [x] React
+ <li> [x] CSS Autodetection, so there's no need to manually associate CSS with a component
  <li> [x] HTML beautifier
  <li> [x] CSS beautifier
  <li> [x] CSS rule whitelist and blacklist. Pass in 'blacklist' prop with value of 'stylesheet' to string match against attributes of `&lt;link&gt;` or `&lt;style&gt;`, 'stylesheets' to pass in an array of those, or 'rule' to match against selectors, or rules for an array of those.
