@@ -1,13 +1,15 @@
-A pattern library, also known as a style guide, is a way of showing example usage of HTML and CSS for components (React components, or plain HTML).
-
-When sites comprise different technologies or are very large then having this example usage can help achieve design consistency.
-
 <p align="center">
   <img width="245" height="378" src="/logo.png" alt="Pattern Book"><br>
   <i>A pattern library designed to be easier to maintain</i>
 </p>
 
 ---
+
+## Q. What is a pattern library?
+
+A pattern library, also known as a style guide, is a way of showing example usage of HTML and CSS for components (React components, or plain HTML).
+
+When sites comprise different technologies or are very large then having this example usage can help achieve design consistency.
 
 ## Q. How can I make patterns for an existing website?
 
