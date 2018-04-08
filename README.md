@@ -70,6 +70,12 @@ Imagine that your pattern library had 5 components then it probably should be or
  <li> [x] Render prop overrides for HTML and CSS
 </ul>
 
+## Who's using it? / Demo
+
+* [LIC Pattern Library](https://springload.github.io/lic-pattern-library/)
+
+You? [Tweet me](http://twitter.com/hollowaynz) to be added.
+
 <h3>ToDo</h3>
 
 <ul>
