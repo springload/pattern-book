@@ -68,11 +68,11 @@ Imagine that your pattern library had 5 components then it probably should be or
 <ul>
  <li> [x] Minimal
  <li> [x] React
- <li> [x] CSS Autodetection, so there's no need to manually associate CSS with a component
+ <li> [x] CSS Rule Autodetection, so there's no need to manually associate CSS with a component
  <li> [x] HTML beautifier
  <li> [x] CSS beautifier
  <li> [x] CSS rule whitelist and blacklist. Pass in 'blacklist' prop with value of 'stylesheet' to string match against attributes of `&lt;link&gt;` or `&lt;style&gt;`, 'stylesheets' to pass in an array of those, or 'rule' to match against selectors, or rules for an array of those.
-  <li> [ ] CSS Rule whitelist (probably only useful to opt-in specific stylesheets while ignoring others)
+ <li> [x] CSS Rule whitelist (probably only useful to opt-in specific stylesheets while ignoring others)
  <li> [x] Render prop overrides for HTML and CSS
 </ul>
 

@@ -42,31 +42,18 @@ var PatternBook = function (_PureComponent) {
       visible: true,
       height: props.height || DEFAULT_HEIGHT,
       html: [],
-      // jsx: [],
       css: []
+      // jsx: [],
     };
 
-    _this.updateBook = _this.updateBook.bind(_this);
     _this.updateHTML = _this.updateHTML.bind(_this);
+    _this.updateCSS = _this.updateCSS.bind(_this);
     // this.updateJSX = this.updateJSX.bind(this);
     // this.updateJSXChildren = this.updateJSXChildren.bind(this);
-    _this.updateCSS = _this.updateCSS.bind(_this);
     return _this;
   }
 
   _createClass(PatternBook, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.updateBook();
-    }
-  }, {
-    key: "updateBook",
-    value: function updateBook() {
-      this.updateHTML();
-      this.updateCSS();
-      // this.updateJSX();
-    }
-  }, {
     key: "updateHTML",
     value: function updateHTML() {
       var html = (0, _xmlZeroBeautify2.default)(this.container.innerHTML, {
@@ -170,7 +157,7 @@ var PatternBook = function (_PureComponent) {
         renderChildren ? renderChildren(kids) : kids,
         _react2.default.createElement(
           "details",
-          { className: "pattern-book__html" },
+          { className: "pattern-book__html", onClick: this.updateHTML },
           _react2.default.createElement(
             "summary",
             null,
@@ -180,7 +167,7 @@ var PatternBook = function (_PureComponent) {
         ),
         _react2.default.createElement(
           "details",
-          { className: "pattern-book__css" },
+          { className: "pattern-book__css", onClick: this.updateCSS },
           _react2.default.createElement(
             "summary",
             null,
@@ -246,14 +233,18 @@ var CSSSniff = function () {
             // Currently the splitting is naive
             var selectors = rule.selectorText.split(",");
             selectors.forEach(function (selector) {
-              if (el.matches(selector)) {
-                matchedCSS[i] = {
-                  selectors: matchedCSS[i] && matchedCSS[i].selectors || [],
-                  properties: rule.cssText.substring(rule.cssText.indexOf("{"))
-                };
-                if (matchedCSS[i].selectors.indexOf(selector) === -1) {
-                  matchedCSS[i].selectors.push(selector);
+              try {
+                if (el.matches(selector)) {
+                  matchedCSS[i] = {
+                    selectors: matchedCSS[i] && matchedCSS[i].selectors || [],
+                    properties: rule.cssText.substring(rule.cssText.indexOf("{"))
+                  };
+                  if (matchedCSS[i].selectors.indexOf(selector) === -1) {
+                    matchedCSS[i].selectors.push(selector);
+                  }
                 }
+              } catch (e) {
+                console.error("ERROR", e.type);
               }
             });
           }

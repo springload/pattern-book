@@ -18,25 +18,14 @@ export default class PatternBook extends PureComponent {
       visible: true,
       height: props.height || DEFAULT_HEIGHT,
       html: [],
-      // jsx: [],
       css: []
+      // jsx: [],
     };
 
-    this.updateBook = this.updateBook.bind(this);
     this.updateHTML = this.updateHTML.bind(this);
+    this.updateCSS = this.updateCSS.bind(this);
     // this.updateJSX = this.updateJSX.bind(this);
     // this.updateJSXChildren = this.updateJSXChildren.bind(this);
-    this.updateCSS = this.updateCSS.bind(this);
-  }
-
-  componentDidMount() {
-    this.updateBook();
-  }
-
-  updateBook() {
-    this.updateHTML();
-    this.updateCSS();
-    // this.updateJSX();
   }
 
   updateHTML() {
@@ -129,7 +118,7 @@ export default class PatternBook extends PureComponent {
     return (
       <div className="pattern-book">
         {renderChildren ? renderChildren(kids) : kids}
-        <details className="pattern-book__html">
+        <details className="pattern-book__html" onClick={this.updateHTML}>
           <summary>HTML</summary>
           {renderHTML ? (
             renderHTML(html)
@@ -137,7 +126,7 @@ export default class PatternBook extends PureComponent {
             <code dangerouslySetInnerHTML={{ __html: html }} />
           )}
         </details>
-        <details className="pattern-book__css">
+        <details className="pattern-book__css" onClick={this.updateCSS}>
           <summary>CSS</summary>
           {renderCSS ? (
             renderCSS(css)
@@ -206,14 +195,18 @@ class CSSSniff {
           // Currently the splitting is naive
           const selectors = rule.selectorText.split(",");
           selectors.forEach(selector => {
-            if (el.matches(selector)) {
-              matchedCSS[i] = {
-                selectors: (matchedCSS[i] && matchedCSS[i].selectors) || [],
-                properties: rule.cssText.substring(rule.cssText.indexOf("{"))
-              };
-              if (matchedCSS[i].selectors.indexOf(selector) === -1) {
-                matchedCSS[i].selectors.push(selector);
+            try {
+              if (el.matches(selector)) {
+                matchedCSS[i] = {
+                  selectors: (matchedCSS[i] && matchedCSS[i].selectors) || [],
+                  properties: rule.cssText.substring(rule.cssText.indexOf("{"))
+                };
+                if (matchedCSS[i].selectors.indexOf(selector) === -1) {
+                  matchedCSS[i].selectors.push(selector);
+                }
               }
+            } catch (e) {
+              console.error("ERROR", e.type);
             }
           });
         }
