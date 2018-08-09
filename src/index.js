@@ -7,8 +7,11 @@ import CSSBeautify, {
   CSSZeroLexer,
   CSSZeroLexerNodeTypes
 } from "css-zero-beautify";
+import { saveAs } from "file-saver/FileSaver";
+import JSZip from "jszip";
 
 const DEFAULT_HEIGHT = 100;
+const GLOBAL_NAMESPACE = "__PATTERN_BOOK_CART__";
 
 export default class PatternBook extends PureComponent {
   constructor(props) {
@@ -22,8 +25,15 @@ export default class PatternBook extends PureComponent {
       // jsx: [],
     };
 
+    this.sniffConfig = {
+      whitelist: this.props.whitelist,
+      blacklist: this.props.blacklist
+    };
+
     this.updateHTML = this.updateHTML.bind(this);
     this.updateCSS = this.updateCSS.bind(this);
+    this.addToCart = this.addToCart.bind(this);
+    this.removeFromCart = this.removeFromCart.bind(this);
     // this.updateJSX = this.updateJSX.bind(this);
     // this.updateJSXChildren = this.updateJSXChildren.bind(this);
   }
@@ -52,10 +62,12 @@ export default class PatternBook extends PureComponent {
   }
 
   updateJSXChildren(child) {
-    if (!child) return;
-    else if (typeof child === "string") {
+    if (!child) {
+      return;
+    } else if (typeof child === "string") {
       return child;
     }
+
     let tag = "<";
     const tagName =
       typeof child.type === "string" ? child.type : child.type.name;
@@ -70,6 +82,7 @@ export default class PatternBook extends PureComponent {
             ? `"${child.props[key]}"`
             : `{${child.props[key]}}`;
       });
+
     if (child.props.children) {
       tag += ">";
       tag += React.Children.map(
@@ -86,10 +99,10 @@ export default class PatternBook extends PureComponent {
   }
 
   updateCSS() {
-    const rules = CSSSniff.getCSSRules([...this.container.childNodes], {
-      whitelist: this.props.whitelist,
-      blacklist: this.props.blacklist
-    });
+    const rules = CSSSniff.getCSSRules(
+      [...this.container.childNodes],
+      this.sniffConfig
+    );
     const rawCSS = CSSSniff.serialize(rules);
     const css = CSSBeautify(rawCSS, {
       output: CSS_OUTPUT_FORMATS.html
@@ -97,16 +110,44 @@ export default class PatternBook extends PureComponent {
     this.setState({ css });
   }
 
+  addToCart() {
+    this.containerSentToCart = this.container;
+    if (!this.containerSentToCart) return;
+    window[GLOBAL_NAMESPACE].add(
+      this.containerSentToCart,
+      this.props.filename,
+      this.sniffConfig
+    );
+    this.setState({
+      inCart: true
+    });
+  }
+
+  removeFromCart(containerSentToCart) {
+    const cartContainer = containerSentToCart || this.container;
+    if (!cartContainer) return;
+    window[GLOBAL_NAMESPACE].remove(cartContainer);
+    this.setState({
+      inCart: false
+    });
+  }
+
   render() {
     const { renderChildren, children, renderHTML, renderCSS } = this.props;
-    const { visible, height, html, jsx, css } = this.state;
+    const { visible, height, html, jsx, css, inCart } = this.state;
 
     if (!visible) return <div style={{ height }} />;
 
     const kids = (
       <div
         ref={container => {
+          if (this.containerSentToCart) {
+            this.removeFromCart(this.containerSentToCart);
+          }
           this.container = container;
+          if (inCart) {
+            this.addToCart();
+          }
         }}
         onClick={this.updateBook}
         className="pattern-book__example"
@@ -116,22 +157,41 @@ export default class PatternBook extends PureComponent {
     );
 
     return (
-      <div className="pattern-book">
+      <div className="b-container">
+        <button
+          title={inCart ? "Remove from cart" : "Add to cart"}
+          onClick={inCart ? this.removeFromCart : this.addToCart}
+          className={`b-cart-toggle b-cart-toggle--${
+            inCart ? "in-cart" : "not-in-cart"
+          }`}
+        >
+          {inCart ? "- Remove from cart" : "+ Add to cart"}
+        </button>
         {renderChildren ? renderChildren(kids) : kids}
         <details className="pattern-book__html" onClick={this.updateHTML}>
-          <summary>HTML</summary>
+          <summary>
+            <abbr title="hypertext markup language">HTML</abbr>
+          </summary>
           {renderHTML ? (
             renderHTML(html)
           ) : (
-            <code dangerouslySetInnerHTML={{ __html: html }} />
+            <code
+              className="b-code"
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
           )}
         </details>
         <details className="pattern-book__css" onClick={this.updateCSS}>
-          <summary>CSS</summary>
+          <summary>
+            <abbr title="Cascading Style Sheets">CSS</abbr>
+          </summary>
           {renderCSS ? (
             renderCSS(css)
           ) : (
-            <code dangerouslySetInnerHTML={{ __html: css }} />
+            <code
+              className="b-code"
+              dangerouslySetInnerHTML={{ __html: css }}
+            />
           )}
         </details>
       </div>
@@ -339,6 +399,43 @@ class CSSSniff {
     return whitelisted !== false && blacklisted !== true;
   }
 
+  static deepMergeRules(rulesArray) {
+    // Via https://stackoverflow.com/a/34749873
+    /**
+     * Simple object check.
+     * @param item
+     * @returns {boolean}
+     */
+    function isObject(item) {
+      return item && typeof item === "object" && !Array.isArray(item);
+    }
+
+    /**
+     * Deep merge two objects.
+     * @param target
+     * @param ...sources
+     */
+    function mergeDeep(target, ...sources) {
+      if (!sources.length) return target;
+      const source = sources.shift();
+
+      if (isObject(target) && isObject(source)) {
+        for (const key in source) {
+          if (isObject(source[key])) {
+            if (!target[key]) Object.assign(target, { [key]: {} });
+            mergeDeep(target[key], source[key]);
+          } else {
+            Object.assign(target, { [key]: source[key] });
+          }
+        }
+      }
+
+      return mergeDeep(target, ...sources);
+    }
+
+    return mergeDeep({}, ...rulesArray);
+  }
+
   static serialize(rules) {
     if (!rules) return "";
     return Object.keys(rules)
@@ -359,4 +456,109 @@ class CSSSniff {
       })
       .join("");
   }
+}
+
+class PatternBookCart {
+  constructor(args) {
+    this.args = args;
+    this.cart = [];
+    this.cartConfig = [];
+    this.cartTitle = [];
+    this.DOCTYPE = "<!DOCTYPE html>\n\n";
+
+    // tedious binding...
+    this.add = this.add.bind(this);
+    this.initRoot = this.initRoot.bind(this);
+    this.remove = this.remove.bind(this);
+    this.render = this.render.bind(this);
+    this.getCSS = this.getCSS.bind(this);
+    this.getHTML = this.getHTML.bind(this);
+    this.download = this.download.bind(this);
+
+    this.initRoot();
+  }
+
+  initRoot() {
+    this.root = document.createElement("div");
+    this.root.className = "b-cart";
+    this.root.innerHTML = `<h1 class="b-cart__title">Cart</h1><p><span data-count></span></p><button type="button" class="b-download">Download</button>`;
+    this.root.count = this.root.querySelector("[data-count]");
+    this.root.button = this.root.querySelector("button");
+    this.root.button.addEventListener("click", this.download);
+    document.body.appendChild(this.root);
+  }
+
+  add(element, title, config) {
+    const index = this.cart.indexOf(element);
+    if (index !== -1) return; // ensure elements are only added once
+    this.cart.push(element);
+    this.cartTitle.push(title);
+    this.cartConfig.push(config);
+    this.render();
+  }
+
+  remove(element, whitelist, blacklist) {
+    const index = this.cart.indexOf(element);
+    if (index === -1) return;
+    this.cart.splice(index, 1);
+    this.cartTitle.splice(index, 1);
+    this.cartConfig.splice(index, 1);
+    this.render();
+  }
+
+  render() {
+    if (this.cart.length === 0) {
+      this.root.style.display = "none";
+      return;
+    }
+    this.root.style.display = "block";
+    this.root.count.textContent = `${this.cart.length} item${
+      this.cart.length > 1 ? "s" : ""
+    }`;
+  }
+
+  getCSS() {
+    const rulesArray = this.cart.map((element, index) => {
+      return CSSSniff.getCSSRules(
+        [...element.childNodes],
+        this.cartConfig[index]
+      );
+    });
+    const mergedRules = CSSSniff.deepMergeRules(rulesArray);
+    const rawCSS = CSSSniff.serialize(mergedRules);
+    return rawCSS;
+  }
+
+  getHTML() {
+    return this.cart.map((element, index) => {
+      const title = this.cartTitle[index] || "pattern";
+      return [title + "-" + index + ".html", this.DOCTYPE + element.innerHTML];
+    });
+  }
+
+  download() {
+    var zip = new JSZip();
+    const rawCSS = this.getCSS();
+    const css = CSSBeautify(rawCSS, {
+      output: CSS_OUTPUT_FORMATS.plaintext
+    });
+    zip.file("patterns.css", css);
+    const html = this.getHTML();
+    var htmlDirectory = zip.folder("html");
+    html.forEach(htmlPart => {
+      htmlDirectory.file(htmlPart[0], htmlPart[1]);
+    });
+
+    zip.generateAsync({ type: "blob" }).then(function(content) {
+      // see FileSaver.js
+      saveAs(content, "your-patterns.zip");
+    });
+  }
+}
+
+if (!window[GLOBAL_NAMESPACE]) {
+  // another PB has already registered
+  window[GLOBAL_NAMESPACE] = new PatternBookCart({
+    namespace: GLOBAL_NAMESPACE
+  });
 }

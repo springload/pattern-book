@@ -1,4 +1,8 @@
-code {
+.b-container {
+  position: relative;
+}
+
+.b-code {
   background: #002b36;
   padding: 0.8rem;
   display: block;
@@ -6,7 +10,7 @@ code {
   font-weight: bold;
 }
 
-/* HTML */
+/* For syntax highlighting HTML */
 .b-tag {
   color: #cb4b16;
 }
@@ -39,7 +43,7 @@ code {
   color: #fdf6e3;
 }
 
-/* CSS */
+/* For syntax highlighting CSS */
 
 .b-selector {
   color: #cb4b16;
@@ -47,4 +51,45 @@ code {
 
 .b-prop {
   color: #268bd2;
+}
+
+/* Cart */
+
+.b-cart-toggle {
+  position: absolute;
+  right: 0px;
+  margin: 5px;
+  border: none;
+  background: #ecf3fb;
+  color: #002b36;
+  font-size: 1.3rem;
+  padding: 0.1rem;
+}
+
+.b-cart {
+  width: 100%;
+  max-width: 200px;
+  position: fixed;
+  right: 1%;
+  bottom: 1%;
+  background-color: #eeeeee;
+  padding: 0.8rem 1rem;
+  display: none;
+  box-shadow: 0px 0px 3px #002b36;
+  border: none;
+}
+
+.b-cart__title {
+  font-size: 3rem;
+}
+
+.b-download {
+  background: #268bd2;
+  color: #fdf6e3;
+  width: 100%;
+  display: block;
+  padding: 0.5rem;
+  text-align: center;
+  border: none;
+  font-weight: bold;
 }

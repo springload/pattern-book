@@ -18,7 +18,15 @@ var _cssZeroBeautify = require("css-zero-beautify");
 
 var _cssZeroBeautify2 = _interopRequireDefault(_cssZeroBeautify);
 
+var _FileSaver = require("file-saver/FileSaver");
+
+var _jszip = require("jszip");
+
+var _jszip2 = _interopRequireDefault(_jszip);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -29,6 +37,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var DEFAULT_HEIGHT = 100;
+var GLOBAL_NAMESPACE = "__PATTERN_BOOK_CART__";
 
 var PatternBook = function (_PureComponent) {
   _inherits(PatternBook, _PureComponent);
@@ -46,8 +55,15 @@ var PatternBook = function (_PureComponent) {
       // jsx: [],
     };
 
+    _this.sniffConfig = {
+      whitelist: _this.props.whitelist,
+      blacklist: _this.props.blacklist
+    };
+
     _this.updateHTML = _this.updateHTML.bind(_this);
     _this.updateCSS = _this.updateCSS.bind(_this);
+    _this.addToCart = _this.addToCart.bind(_this);
+    _this.removeFromCart = _this.removeFromCart.bind(_this);
     // this.updateJSX = this.updateJSX.bind(this);
     // this.updateJSXChildren = this.updateJSXChildren.bind(this);
     return _this;
@@ -82,9 +98,12 @@ var PatternBook = function (_PureComponent) {
   }, {
     key: "updateJSXChildren",
     value: function updateJSXChildren(child) {
-      if (!child) return;else if (typeof child === "string") {
+      if (!child) {
+        return;
+      } else if (typeof child === "string") {
         return child;
       }
+
       var tag = "<";
       var tagName = typeof child.type === "string" ? child.type : child.type.name;
       tag += tagName;
@@ -95,6 +114,7 @@ var PatternBook = function (_PureComponent) {
         tag += " " + key + "=";
         tag += typeof child.props[key] === "string" ? "\"" + child.props[key] + "\"" : "{" + child.props[key] + "}";
       });
+
       if (child.props.children) {
         tag += ">";
         tag += _react2.default.Children.map(child.props.children, this.updateJSXChildren).join("");
@@ -109,15 +129,32 @@ var PatternBook = function (_PureComponent) {
   }, {
     key: "updateCSS",
     value: function updateCSS() {
-      var rules = CSSSniff.getCSSRules([].concat(_toConsumableArray(this.container.childNodes)), {
-        whitelist: this.props.whitelist,
-        blacklist: this.props.blacklist
-      });
+      var rules = CSSSniff.getCSSRules([].concat(_toConsumableArray(this.container.childNodes)), this.sniffConfig);
       var rawCSS = CSSSniff.serialize(rules);
       var css = (0, _cssZeroBeautify2.default)(rawCSS, {
         output: _cssZeroBeautify.OUTPUT_FORMATS.html
       });
       this.setState({ css: css });
+    }
+  }, {
+    key: "addToCart",
+    value: function addToCart() {
+      this.containerSentToCart = this.container;
+      if (!this.containerSentToCart) return;
+      window[GLOBAL_NAMESPACE].add(this.containerSentToCart, this.props.filename, this.sniffConfig);
+      this.setState({
+        inCart: true
+      });
+    }
+  }, {
+    key: "removeFromCart",
+    value: function removeFromCart(containerSentToCart) {
+      var cartContainer = containerSentToCart || this.container;
+      if (!cartContainer) return;
+      window[GLOBAL_NAMESPACE].remove(cartContainer);
+      this.setState({
+        inCart: false
+      });
     }
   }, {
     key: "render",
@@ -134,7 +171,8 @@ var PatternBook = function (_PureComponent) {
           height = _state.height,
           html = _state.html,
           jsx = _state.jsx,
-          css = _state.css;
+          css = _state.css,
+          inCart = _state.inCart;
 
 
       if (!visible) return _react2.default.createElement("div", { style: { height: height } });
@@ -143,7 +181,13 @@ var PatternBook = function (_PureComponent) {
         "div",
         {
           ref: function ref(container) {
+            if (_this2.containerSentToCart) {
+              _this2.removeFromCart(_this2.containerSentToCart);
+            }
             _this2.container = container;
+            if (inCart) {
+              _this2.addToCart();
+            }
           },
           onClick: this.updateBook,
           className: "pattern-book__example"
@@ -153,7 +197,16 @@ var PatternBook = function (_PureComponent) {
 
       return _react2.default.createElement(
         "div",
-        { className: "pattern-book" },
+        { className: "b-container" },
+        _react2.default.createElement(
+          "button",
+          {
+            title: inCart ? "Remove from cart" : "Add to cart",
+            onClick: inCart ? this.removeFromCart : this.addToCart,
+            className: "b-cart-toggle b-cart-toggle--" + (inCart ? "in-cart" : "not-in-cart")
+          },
+          inCart ? "- Remove from cart" : "+ Add to cart"
+        ),
         renderChildren ? renderChildren(kids) : kids,
         _react2.default.createElement(
           "details",
@@ -161,9 +214,16 @@ var PatternBook = function (_PureComponent) {
           _react2.default.createElement(
             "summary",
             null,
-            "HTML"
+            _react2.default.createElement(
+              "abbr",
+              { title: "hypertext markup language" },
+              "HTML"
+            )
           ),
-          renderHTML ? renderHTML(html) : _react2.default.createElement("code", { dangerouslySetInnerHTML: { __html: html } })
+          renderHTML ? renderHTML(html) : _react2.default.createElement("code", {
+            className: "b-code",
+            dangerouslySetInnerHTML: { __html: html }
+          })
         ),
         _react2.default.createElement(
           "details",
@@ -171,9 +231,16 @@ var PatternBook = function (_PureComponent) {
           _react2.default.createElement(
             "summary",
             null,
-            "CSS"
+            _react2.default.createElement(
+              "abbr",
+              { title: "Cascading Style Sheets" },
+              "CSS"
+            )
           ),
-          renderCSS ? renderCSS(css) : _react2.default.createElement("code", { dangerouslySetInnerHTML: { __html: css } })
+          renderCSS ? renderCSS(css) : _react2.default.createElement("code", {
+            className: "b-code",
+            dangerouslySetInnerHTML: { __html: css }
+          })
         )
       );
     }
@@ -368,6 +435,48 @@ var CSSSniff = function () {
       return whitelisted !== false && blacklisted !== true;
     }
   }, {
+    key: "deepMergeRules",
+    value: function deepMergeRules(rulesArray) {
+      // Via https://stackoverflow.com/a/34749873
+      /**
+       * Simple object check.
+       * @param item
+       * @returns {boolean}
+       */
+      function isObject(item) {
+        return item && typeof item === "object" && !Array.isArray(item);
+      }
+
+      /**
+       * Deep merge two objects.
+       * @param target
+       * @param ...sources
+       */
+      function mergeDeep(target) {
+        for (var _len = arguments.length, sources = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          sources[_key - 1] = arguments[_key];
+        }
+
+        if (!sources.length) return target;
+        var source = sources.shift();
+
+        if (isObject(target) && isObject(source)) {
+          for (var key in source) {
+            if (isObject(source[key])) {
+              if (!target[key]) Object.assign(target, _defineProperty({}, key, {}));
+              mergeDeep(target[key], source[key]);
+            } else {
+              Object.assign(target, _defineProperty({}, key, source[key]));
+            }
+          }
+        }
+
+        return mergeDeep.apply(undefined, [target].concat(sources));
+      }
+
+      return mergeDeep.apply(undefined, [{}].concat(_toConsumableArray(rulesArray)));
+    }
+  }, {
     key: "serialize",
     value: function serialize(rules) {
       if (!rules) return "";
@@ -391,3 +500,120 @@ var CSSSniff = function () {
 
   return CSSSniff;
 }();
+
+var PatternBookCart = function () {
+  function PatternBookCart(args) {
+    _classCallCheck(this, PatternBookCart);
+
+    this.args = args;
+    this.cart = [];
+    this.cartConfig = [];
+    this.cartTitle = [];
+    this.DOCTYPE = "<!DOCTYPE html>\n\n";
+
+    // tedious binding...
+    this.add = this.add.bind(this);
+    this.initRoot = this.initRoot.bind(this);
+    this.remove = this.remove.bind(this);
+    this.render = this.render.bind(this);
+    this.getCSS = this.getCSS.bind(this);
+    this.getHTML = this.getHTML.bind(this);
+    this.download = this.download.bind(this);
+
+    this.initRoot();
+  }
+
+  _createClass(PatternBookCart, [{
+    key: "initRoot",
+    value: function initRoot() {
+      this.root = document.createElement("div");
+      this.root.className = "b-cart";
+      this.root.innerHTML = "<h1 class=\"b-cart__title\">Cart</h1><p><span data-count></span></p><button type=\"button\" class=\"b-download\">Download</button>";
+      this.root.count = this.root.querySelector("[data-count]");
+      this.root.button = this.root.querySelector("button");
+      this.root.button.addEventListener("click", this.download);
+      document.body.appendChild(this.root);
+    }
+  }, {
+    key: "add",
+    value: function add(element, title, config) {
+      var index = this.cart.indexOf(element);
+      if (index !== -1) return; // ensure elements are only added once
+      this.cart.push(element);
+      this.cartTitle.push(title);
+      this.cartConfig.push(config);
+      this.render();
+    }
+  }, {
+    key: "remove",
+    value: function remove(element, whitelist, blacklist) {
+      var index = this.cart.indexOf(element);
+      if (index === -1) return;
+      this.cart.splice(index, 1);
+      this.cartTitle.splice(index, 1);
+      this.cartConfig.splice(index, 1);
+      this.render();
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      if (this.cart.length === 0) {
+        this.root.style.display = "none";
+        return;
+      }
+      this.root.style.display = "block";
+      this.root.count.textContent = this.cart.length + " item" + (this.cart.length > 1 ? "s" : "");
+    }
+  }, {
+    key: "getCSS",
+    value: function getCSS() {
+      var _this3 = this;
+
+      var rulesArray = this.cart.map(function (element, index) {
+        return CSSSniff.getCSSRules([].concat(_toConsumableArray(element.childNodes)), _this3.cartConfig[index]);
+      });
+      var mergedRules = CSSSniff.deepMergeRules(rulesArray);
+      var rawCSS = CSSSniff.serialize(mergedRules);
+      return rawCSS;
+    }
+  }, {
+    key: "getHTML",
+    value: function getHTML() {
+      var _this4 = this;
+
+      return this.cart.map(function (element, index) {
+        var title = _this4.cartTitle[index] || "pattern";
+        return [title + "-" + index + ".html", _this4.DOCTYPE + element.innerHTML];
+      });
+    }
+  }, {
+    key: "download",
+    value: function download() {
+      var zip = new _jszip2.default();
+      var rawCSS = this.getCSS();
+      var css = (0, _cssZeroBeautify2.default)(rawCSS, {
+        output: _cssZeroBeautify.OUTPUT_FORMATS.plaintext
+      });
+      zip.file("patterns.css", css);
+      var html = this.getHTML();
+      var htmlDirectory = zip.folder("html");
+      html.forEach(function (htmlPart) {
+        htmlDirectory.file(htmlPart[0], htmlPart[1]);
+      });
+
+      zip.generateAsync({ type: "blob" }).then(function (content) {
+        // see FileSaver.js
+        (0, _FileSaver.saveAs)(content, "your-patterns.zip");
+      });
+    }
+  }]);
+
+  return PatternBookCart;
+}();
+
+if (!window[GLOBAL_NAMESPACE]) {
+  // another PB has already registered
+  window[GLOBAL_NAMESPACE] = new PatternBookCart({
+    namespace: GLOBAL_NAMESPACE
+  });
+}

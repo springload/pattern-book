@@ -1,15 +1,23 @@
 <p align="center">
   <img width="245" height="378" src="/logo.png" alt="Pattern Book"><br>
-  <i>A pattern library designed to be easier to maintain</i>
+  <i>A pattern library system designed to be easier to maintain</i>
 </p>
 
----
+# Install
 
-## Q. What is a pattern library?
+    npm install react-pattern-book
 
-A pattern library, also known as a style guide, is a way of showing example usage of HTML and CSS for components (React components, or plain HTML).
+    yarn add react-pattern-book
 
-When sites comprise different technologies or are very large then having this example usage can help achieve design consistency.
+# What is a Pattern Library?
+
+A pattern library (part of a Style Guide or a Design System), is a way of showing example usage of components and how they're made with HTML, CSS, and other assets.
+
+Having this documented can help siloed teams, or different vendors, coordinate their style to achieve design consistency.
+
+## Q. What is React-Pattern-Book?
+
+A component that autodetects the HTML and CSS of your components.
 
 ## Q. How can I make patterns for an existing website?
 
@@ -20,48 +28,41 @@ Unlike most Pattern Libaries, also known as Style Guides, there's no need to def
 Usage:
 
 ```javascript
-import React, { Component } from "react";
-import Book from "pattern-book";
+import React from "react";
+import Book from "react-pattern-book";
 import "h6.css"; // contains h6 { color: red; }
 
-class PatternLibrary extends Component {
-  render() {
-    return (
-      <div>
-        <h5>Heading Patterns</h5>
-        <hr />
-        <Book>
-          <h6>My Heading 6</h6>
-        </Book>
-      </div>
-    );
-  }
-}
+export default () => (
+  <main>
+    <header>Heading Patterns</header>
+    <Book>
+      <h6>My Heading 6</h6>
+    </Book>
+  </main>
+);
 ```
 
 Will look like
 
-<blockquote><h5>Heading Patterns</h5><hr><div><h6>My Heading 6</h6><details><summary>HTML</summary>&lt;h6&gt;My Heading 6&lt;/h6&gt;</details><details><summary>CSS</summary>h6 { color: red; }</details></div></blockquote>
+<blockquote><header>Heading Patterns</header><div><h6>My Heading 6</h6><details><summary>HTML</summary>&lt;h6&gt;My Heading 6&lt;/h6&gt;</details><details><summary>CSS</summary>h6 { color: red; }</details></div></blockquote>
 
-## Q. This is a pattern library so where's the dev webserver?
+## This is a pattern library so where's the dev webserver?
 
 Great question.
 
-`pattern-book` doesn't include a dev server because other projects do it better.
+`react-pattern-book` doesn't include a dev server because other projects do it better.
 
 So instead just use <a href="https://github.com/facebookincubator/create-react-app">Create-React-App</a> or, add `<Book>` tags to a new route in your existing app, or use whatever boilerplate you like.
 
-Pattern-Book is very specifically targetting just the render and code preview of your components.
+## How does react-pattern-book organise the page of patterns... with headings, accordions, tabs, or what?
 
-## Q. How does pattern-book organise the page of patterns... with headings, accordions, tabs, or what?
+Here's a hypothetical... if your pattern library had 5 components then it probably should be organised quite differently to another library with 1000 components, so this software is intentionally unopinionated about the presentation of your components. Pattern-Book just tries to do one thing well -- rendering the component preview. Decide for yourself how to organise them (do try <a href="https://github.com/springload/react-accessible-accordion/">[react-accessible-accordion</a> though!).
 
-Imagine that your pattern library had 5 components then it probably should be organised quite differently to another library with 1000 components, so this software is unopinionated about organisation. Pattern-Book just renders the component preview so decide for yourself how to organise them (do try <a href="https://github.com/springload/react-accessible-accordion/">[react-accessible-accordion</a> though!).
-
-<p>So, long story short, it doesn't organise them, so design it however you want! (headings are nice and simple though)</p>
+<p>So, long story short, it doesn't organise them, so design it however you want!</p>
 
 # Code Preview Themes
 
-<p>Use `pattern-book/theme/solarize.css`.</p>
+<p>Use `react-pattern-book/theme/solarize.css`.</p>
 
 <h3>Features</h3>
 
@@ -69,6 +70,7 @@ Imagine that your pattern library had 5 components then it probably should be or
  <li> [x] Minimal
  <li> [x] React
  <li> [x] CSS Rule Autodetection, so there's no need to manually associate CSS with a component
+ <li> [x] ZIP download of particular components
  <li> [x] HTML beautifier
  <li> [x] CSS beautifier
  <li> [x] CSS rule whitelist and blacklist. Pass in 'blacklist' prop with value of 'stylesheet' to string match against attributes of `&lt;link&gt;` or `&lt;style&gt;`, 'stylesheets' to pass in an array of those, or 'rule' to match against selectors, or rules for an array of those.
@@ -85,10 +87,8 @@ You? [Tweet me](http://twitter.com/hollowaynz) to be added.
 <h3>ToDo</h3>
 
 <ul>
- <li> [ ] ZIP download of particular components (including assets, eg backgrounds images and fonts).
- <li> [ ] ...and show prop types, somehow? (`prop-types` or Flow/TS?). Sadly I'm not sure how we could support FlowType/TypeScript types because those are removed at compile-time.
+  <li> [ ] ...and show prop types, somehow? (`prop-types` or Flow/TS?). Sadly I'm not sure how we could support FlowType/TypeScript types because those are removed at compile-time.
  <li> [ ] Detect basic JSX React Components... this is almost working
  <li> [ ] Make it support interactive components (eg accumulating CSS across these multiple states).
- <li> [ ] Make the `&lt;Book&gt;` not render until it scrolls into view (pattern libraries are notorious for having hundreds of compnents on a long page, so this is hopefully an easy optimisation)
- <li> [ ] Parse SourceMaps to derive Sass (etc) if possible.
+  <li> [ ] Parse SourceMaps to derive Sass (etc) if possible.
 </ul>
